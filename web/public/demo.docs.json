@@ -3397,7 +3397,6 @@
     ],
     "code_sample": "xpcall(function()\n    error(\"failure\")\nend, function(err)\n    print(\"Caught error:\", err)\nend)"
   },
-{
   "@pforge/global/screen": {
     "documentation": "2D drawing API. Origin (0,0) is the center of the screen. 1 unit = 100 pixels.",
     "keys": {
