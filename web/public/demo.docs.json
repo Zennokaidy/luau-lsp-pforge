@@ -3397,4 +3397,355 @@
     ],
     "code_sample": "xpcall(function()\n    error(\"failure\")\nend, function(err)\n    print(\"Caught error:\", err)\nend)"
   }
+},
+{
+  "@pforge/global/screen": {
+    "documentation": "2D drawing API. Origin (0,0) is the center of the screen. 1 unit = 100 pixels.",
+    "keys": {
+      "clear": "@pforge/global/screen.clear",
+      "setColor": "@pforge/global/screen.setColor",
+      "setAlpha": "@pforge/global/screen.setAlpha",
+      "setBlending": "@pforge/global/screen.setBlending",
+      "setFont": "@pforge/global/screen.setFont",
+      "setTranslation": "@pforge/global/screen.setTranslation",
+      "setScale": "@pforge/global/screen.setScale",
+      "setRotation": "@pforge/global/screen.setRotation",
+      "setPixelated": "@pforge/global/screen.setPixelated",
+      "setLineWidth": "@pforge/global/screen.setLineWidth",
+      "setLineDash": "@pforge/global/screen.setLineDash",
+      "fillRect": "@pforge/global/screen.fillRect",
+      "drawRect": "@pforge/global/screen.drawRect",
+      "fillRound": "@pforge/global/screen.fillRound",
+      "drawRound": "@pforge/global/screen.drawRound",
+      "fillRoundRect": "@pforge/global/screen.fillRoundRect",
+      "drawRoundRect": "@pforge/global/screen.drawRoundRect",
+      "drawLine": "@pforge/global/screen.drawLine",
+      "drawText": "@pforge/global/screen.drawText",
+      "textWidth": "@pforge/global/screen.textWidth",
+      "drawSprite": "@pforge/global/screen.drawSprite",
+      "drawImage": "@pforge/global/screen.drawImage",
+      "drawMap": "@pforge/global/screen.drawMap"
+    }
+  },
+  "@pforge/global/screen.clear": {
+    "documentation": "Clears the screen with a color.",
+    "code_sample": "screen.clear(\"#0f1115\")"
+  },
+  "@pforge/global/screen.setColor": {
+    "documentation": "Sets the current color used by fill/stroke.",
+    "code_sample": "screen.setColor(\"#4fa8d8\")"
+  },
+  "@pforge/global/screen.setAlpha": {
+    "documentation": "Sets global alpha (0.0 to 1.0).",
+    "code_sample": "screen.setAlpha(0.5)"
+  },
+  "@pforge/global/screen.setBlending": {
+    "documentation": "Sets the blending mode (normal, additive, multiply, screen, ...).",
+    "code_sample": "screen.setBlending(\"additive\")"
+  },
+  "@pforge/global/screen.setFont": {
+    "documentation": "Sets the font used for text.",
+    "code_sample": "screen.setFont(\"Arial\")"
+  },
+  "@pforge/global/screen.setTranslation": {
+    "documentation": "Moves the drawing origin.",
+    "code_sample": "screen.setTranslation(1, 2)"
+  },
+  "@pforge/global/screen.setScale": {
+    "documentation": "Sets global scale.",
+    "code_sample": "screen.setScale(2, 2)"
+  },
+  "@pforge/global/screen.setRotation": {
+    "documentation": "Rotates everything (radians).",
+    "code_sample": "screen.setRotation(math.pi / 4)"
+  },
+  "@pforge/global/screen.setPixelated": {
+    "documentation": "Disables image smoothing (pixel art).",
+    "code_sample": "screen.setPixelated(true)"
+  },
+  "@pforge/global/screen.setLineWidth": {
+    "documentation": "Sets the stroke line width in units.",
+    "code_sample": "screen.setLineWidth(0.05)"
+  },
+  "@pforge/global/screen.setLineDash": {
+    "documentation": "Sets line dash pattern. E.g. {0.1, 0.05}.",
+    "code_sample": "screen.setLineDash({0.1, 0.05})"
+  },
+  "@pforge/global/screen.fillRect": {
+    "documentation": "Fills a rectangle. (x, y) is the center.",
+    "code_sample": "screen.fillRect(0, 0, 1, 1, \"#f00\")"
+  },
+  "@pforge/global/screen.drawRect": {
+    "documentation": "Draws the outline of a rectangle.",
+    "code_sample": "screen.drawRect(0, 0, 1, 1, \"#fff\")"
+  },
+  "@pforge/global/screen.fillRound": {
+    "documentation": "Fills an ellipse.",
+    "code_sample": "screen.fillRound(0, 0, 1, 1, \"#0f0\")"
+  },
+  "@pforge/global/screen.drawRound": {
+    "documentation": "Draws the outline of an ellipse.",
+    "code_sample": "screen.drawRound(0, 0, 1, 1, \"#fff\")"
+  },
+  "@pforge/global/screen.fillRoundRect": {
+    "documentation": "Fills a rounded rectangle.",
+    "code_sample": "screen.fillRoundRect(0, 0, 2, 1, 0.2, \"#4fa8d8\")"
+  },
+  "@pforge/global/screen.drawRoundRect": {
+    "documentation": "Draws the outline of a rounded rectangle.",
+    "code_sample": "screen.drawRoundRect(0, 0, 2, 1, 0.2, \"#fff\")"
+  },
+  "@pforge/global/screen.drawLine": {
+    "documentation": "Draws a line from (x1, y1) to (x2, y2).",
+    "code_sample": "screen.drawLine(-1, 0, 1, 0)"
+  },
+  "@pforge/global/screen.drawText": {
+    "documentation": "Draws text. size is in units (0.2 = 20 pixels).",
+    "code_sample": "screen.drawText(\"Hi\", 0, 0, 0.2, \"#fff\")"
+  },
+  "@pforge/global/screen.textWidth": {
+    "documentation": "Returns the width of a text string in units.",
+    "code_sample": "local w = screen.textWidth(\"Hello\", 0.2)"
+  },
+  "@pforge/global/screen.drawSprite": {
+    "documentation": "Draws a sprite registered in the sprites table.",
+    "code_sample": "screen.drawSprite(\"player\", 0, 0, 1)"
+  },
+  "@pforge/global/screen.drawImage": {
+    "documentation": "Draws a PForgeImage at the given position.",
+    "code_sample": "screen.drawImage(myImg, 0, 0, 1)"
+  },
+  "@pforge/global/screen.drawMap": {
+    "documentation": "Draws a tilemap registered in the maps table.",
+    "code_sample": "screen.drawMap(\"level1\", 0, 0, 10, 8)"
+  },
+
+  "@pforge/global/keyboard": {
+    "documentation": "Keyboard input state.",
+    "keys": {
+      "press": "@pforge/global/keyboard.press",
+      "release": "@pforge/global/keyboard.release"
+    }
+  },
+  "@pforge/global/keyboard.press": {
+    "documentation": "1 only on the frame the key was pressed.",
+    "code_sample": "if keyboard.press.SPACE == 1 then\n  print(\"jump\")\nend"
+  },
+  "@pforge/global/keyboard.release": {
+    "documentation": "1 only on the frame the key was released."
+  },
+
+  "@pforge/global/mouse": {
+    "documentation": "Mouse input. Coordinates are in units, origin at the screen center.",
+    "code_sample": "if mouse.left == 1 then\n  print(mouse.x, mouse.y)\nend"
+  },
+
+  "@pforge/global/touch": {
+    "documentation": "Touch input.",
+    "code_sample": "if touch.touching == 1 then\n  print(touch.x, touch.y)\nend"
+  },
+
+  "@pforge/global/gamepad": {
+    "documentation": "Gamepad input. Returns 0 if no controller is connected."
+  },
+
+  "@pforge/global/system": {
+    "documentation": "System utilities.",
+    "keys": {
+      "time": "@pforge/global/system.time",
+      "say": "@pforge/global/system.say",
+      "file": "@pforge/global/system.file"
+    }
+  },
+  "@pforge/global/system.time": {
+    "documentation": "Timestamp in milliseconds.",
+    "code_sample": "local t = system.time()"
+  },
+  "@pforge/global/system.say": {
+    "documentation": "Shows a native alert.",
+    "code_sample": "system.say(\"Hello\")"
+  },
+  "@pforge/global/system.file": {
+    "documentation": "File save/load helpers."
+  },
+
+  "@pforge/global/storage": {
+    "documentation": "localStorage-backed persistence.",
+    "code_sample": "storage.set(\"highscore\", 100)\nlocal hi = storage.get(\"highscore\", 0)"
+  },
+
+  "@pforge/global/audio": {
+    "documentation": "Procedural sound playback.",
+    "keys": {
+      "beep": "@pforge/global/audio.beep",
+      "playSound": "@pforge/global/audio.playSound",
+      "playMusic": "@pforge/global/audio.playMusic"
+    }
+  },
+  "@pforge/global/audio.beep": {
+    "documentation": "Plays a sequence of notes. Syntax: \"C4 E4 G4\".",
+    "code_sample": "audio.beep(\"C4 E4 G4 C5\")"
+  },
+  "@pforge/global/audio.playSound": {
+    "documentation": "Plays a sound registered in the sounds table.",
+    "code_sample": "local s = audio.playSound(\"explosion\")\ns.setVolume(0.5)"
+  },
+  "@pforge/global/audio.playMusic": {
+    "documentation": "Plays a sound registered in the music table."
+  },
+
+  "@pforge/global/asset_manager": {
+    "documentation": "Asset loading (images, JSON, text, CSV, Markdown, fonts).",
+    "keys": {
+      "loadImage": "@pforge/global/asset_manager.loadImage",
+      "loadJSON": "@pforge/global/asset_manager.loadJSON",
+      "loadText": "@pforge/global/asset_manager.loadText"
+    }
+  },
+  "@pforge/global/asset_manager.loadImage": {
+    "documentation": "Loads an image asynchronously.",
+    "code_sample": "asset_manager.loadImage(\"logo.png\", function(img)\n  logo = img\nend)"
+  },
+  "@pforge/global/asset_manager.loadJSON": {
+    "documentation": "Fetches a JSON file.",
+    "code_sample": "asset_manager.loadJSON(\"data.json\", function(d)\n  print(d)\nend)"
+  },
+  "@pforge/global/asset_manager.loadText": {
+    "documentation": "Fetches a text file."
+  },
+
+  "@pforge/global/gfx3d": {
+    "documentation": "3D graphics API (wrapper over Three.js). Call gfx3d.init() first.",
+    "keys": {
+      "init": "@pforge/global/gfx3d.init",
+      "addLight": "@pforge/global/gfx3d.addLight",
+      "addBox": "@pforge/global/gfx3d.addBox",
+      "addSphere": "@pforge/global/gfx3d.addSphere",
+      "addPlane": "@pforge/global/gfx3d.addPlane",
+      "setCamera": "@pforge/global/gfx3d.setCamera",
+      "render": "@pforge/global/gfx3d.render",
+      "rotate": "@pforge/global/gfx3d.rotate",
+      "translate": "@pforge/global/gfx3d.translate"
+    }
+  },
+  "@pforge/global/gfx3d.init": {
+    "documentation": "Creates scene, camera and renderer.",
+    "code_sample": "gfx3d.init({ background = 0x0f1115, fov = 70 })"
+  },
+  "@pforge/global/gfx3d.addLight": {
+    "documentation": "Adds a light. Types: ambient, directional, point, hemisphere.",
+    "code_sample": "gfx3d.addLight(\"ambient\", { color = 0xffffff, intensity = 0.6 })"
+  },
+  "@pforge/global/gfx3d.addBox": {
+    "documentation": "Adds a box mesh.",
+    "code_sample": "gfx3d.addBox(\"cube\", { size = {1, 1, 1}, color = 0x4fa8d8 })"
+  },
+  "@pforge/global/gfx3d.addSphere": {
+    "documentation": "Adds a sphere mesh.",
+    "code_sample": "gfx3d.addSphere(\"ball\", { radius = 0.5, color = 0xe04343 })"
+  },
+  "@pforge/global/gfx3d.addPlane": {
+    "documentation": "Adds a plane mesh (ground).",
+    "code_sample": "gfx3d.addPlane(\"ground\", { width = 20, height = 20 })"
+  },
+  "@pforge/global/gfx3d.setCamera": {
+    "documentation": "Configures the camera.",
+    "code_sample": "gfx3d.setCamera({ position = {0, 3, 8}, lookAt = {0, 0, 0} })"
+  },
+  "@pforge/global/gfx3d.render": {
+    "documentation": "Renders the scene. Call inside onDraw.",
+    "code_sample": "onDraw(function()\n  gfx3d.render()\nend)"
+  },
+  "@pforge/global/gfx3d.rotate": {
+    "documentation": "Adds rotation to a mesh.",
+    "code_sample": "gfx3d.rotate(\"cube\", 0, 0.01, 0)"
+  },
+  "@pforge/global/gfx3d.translate": {
+    "documentation": "Adds translation to a mesh."
+  },
+
+  "@pforge/global/PForgeImage": {
+    "documentation": "Offscreen canvas you can manipulate pixel by pixel.",
+    "code_sample": "local img = PForgeImage.new(32, 32, true)"
+  },
+  "@pforge/global/PForgeSprite": {
+    "documentation": "A collection of frames (PForgeImage) with configurable FPS.",
+    "code_sample": "local s = PForgeSprite.new({frame1, frame2})"
+  },
+  "@pforge/global/PForgeMap": {
+    "documentation": "A 2D grid of tiles.",
+    "code_sample": "local m = PForgeMap.new(20, 15, 1, 1)"
+  },
+  "@pforge/global/PForgeSound": {
+    "documentation": "Multi-channel audio buffer.",
+    "code_sample": "local s = PForgeSound.new(1, 44100, 44100)"
+  },
+
+  "@pforge/global/sprites": {
+    "documentation": "Global sprite registry. Assign with sprites[\"name\"] = sprite.",
+    "code_sample": "sprites[\"player\"] = PForgeSprite.new({frame1, frame2})"
+  },
+  "@pforge/global/maps": {
+    "documentation": "Global tilemap registry."
+  },
+  "@pforge/global/sounds": {
+    "documentation": "Global sound registry."
+  },
+  "@pforge/global/music": {
+    "documentation": "Global music registry."
+  },
+
+  "@pforge/global/onInit": {
+    "documentation": "Registers a function called once at startup.",
+    "code_sample": "onInit(function()\n  print(\"started\")\nend)"
+  },
+  "@pforge/global/onUpdate": {
+    "documentation": "Registers a function called every frame. dt = delta in seconds.",
+    "code_sample": "onUpdate(function(dt, frame)\n  print(dt)\nend)"
+  },
+  "@pforge/global/onDraw": {
+    "documentation": "Registers a function called every frame for drawing.",
+    "code_sample": "onDraw(function()\n  screen.clear(\"#0f1115\")\nend)"
+  },
+
+  "@pforge/global/after": {
+    "documentation": "Runs a function once after N seconds.",
+    "code_sample": "after(2, function()\n  print(\"2 seconds passed\")\nend)"
+  },
+  "@pforge/global/every": {
+    "documentation": "Runs a function repeatedly every N seconds.",
+    "code_sample": "every(1, function()\n  print(\"tick\")\nend)"
+  },
+  "@pforge/global/sleep": {
+    "documentation": "Pauses execution for the given number of seconds."
+  },
+
+  "@pforge/global/seconds": { "documentation": "Converts a number to seconds." },
+  "@pforge/global/milliseconds": { "documentation": "Converts milliseconds to seconds." },
+  "@pforge/global/sind": { "documentation": "Sine using degrees." },
+  "@pforge/global/cosd": { "documentation": "Cosine using degrees." },
+  "@pforge/global/tand": { "documentation": "Tangent using degrees." },
+  "@pforge/global/asind": { "documentation": "Arcsine returning degrees." },
+  "@pforge/global/acosd": { "documentation": "Arccosine returning degrees." },
+  "@pforge/global/atand": { "documentation": "Arctangent returning degrees." },
+  "@pforge/global/atan2d": { "documentation": "Arctangent of y/x returning degrees." },
+
+  "@pforge/global/random": {
+    "documentation": "Random number generator.",
+    "code_sample": "local r = random.next()\nlocal n = random.nextInt(10)"
+  },
+  "@pforge/global/List": {
+    "documentation": "Creates a list (table with helper methods)."
+  },
+
+  "@pforge/global/three": {
+    "documentation": "Three.js bridge for advanced 3D usage."
+  },
+
+  "@pforge/global/Server": {
+    "documentation": "Multiplayer server."
+  },
+  "@pforge/global/ServerConnection": {
+    "documentation": "Client-side connection to a Server."
+  }
 }
