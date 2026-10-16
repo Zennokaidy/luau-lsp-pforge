@@ -263,14 +263,6 @@ type Random = {
 declare random: Random
 declare List: () -> { any }
 
-declare three: {
-    create: (name: string, ...any) -> string,
-    call: (handle: string, method: string, ...any) -> any,
-    get: (handle: string, prop: string) -> any,
-    set: (handle: string, prop: string, value: any) -> (),
-    const: (name: string) -> number,
-}
-
 type ServerConnection = {
     status: string,
     messages: { any },
