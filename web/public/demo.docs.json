@@ -3771,8 +3771,7 @@
     "teleport": "@pforge/global/player.teleport",
     "setLook": "@pforge/global/player.setLook",
     "toggleCamera": "@pforge/global/player.toggleCamera"
-  },
-  
+  }
   },
   "@pforge/global/player.Camera": {
     "documentation": "Modo de câmera: \"firstPerson\", \"thirdPerson\" ou \"both\". Quando \"both\", a tecla E alterna nativamente."
