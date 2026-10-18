@@ -3746,4 +3746,83 @@
   "@pforge/global/ServerConnection": {
     "documentation": "Client-side connection to a Server."
   }
+
+"@pforge/global/player": {
+  "documentation": "O player local. Controla movimento, câmera e avatar nativo.",
+  "keys": {
+    "Camera": "@pforge/global/player.Camera",
+    "position": "@pforge/global/player.position",
+    "x": "@pforge/global/player.x",
+    "y": "@pforge/global/player.y",
+    "z": "@pforge/global/player.z",
+    "speed": "@pforge/global/player.speed",
+    "jump": "@pforge/global/player.jump",
+    "gravity": "@pforge/global/player.gravity",
+    "eye": "@pforge/global/player.eye",
+    "sens": "@pforge/global/player.sens",
+    "onGround": "@pforge/global/player.onGround",
+    "vy": "@pforge/global/player.vy",
+    "walkPhase": "@pforge/global/player.walkPhase",
+    "moveBlend": "@pforge/global/player.moveBlend",
+    "multiplayer": "@pforge/global/player.multiplayer",
+    "cameraDistance": "@pforge/global/player.cameraDistance",
+    "cameraDistanceMin": "@pforge/global/player.cameraDistanceMin",
+    "cameraDistanceMax": "@pforge/global/player.cameraDistanceMax",
+    "enabled": "@pforge/global/player.enabled",
+    "teleport": "@pforge/global/player.teleport",
+    "setLook": "@pforge/global/player.setLook",
+    "toggleCamera": "@pforge/global/player.toggleCamera"
+  },
+  
+  },
+  "@pforge/global/player.Camera": {
+    "documentation": "Modo de câmera: \"firstPerson\", \"thirdPerson\" ou \"both\". Quando \"both\", a tecla E alterna nativamente."
+  },
+  "@pforge/global/player.position": {
+    "documentation": "Tabela com a posição do player: { x, y, z }."
+  },
+  "@pforge/global/player.x": { "documentation": "Coordenada X do player (atalho para position.x)." },
+  "@pforge/global/player.y": { "documentation": "Coordenada Y do player (atalho para position.y)." },
+  "@pforge/global/player.z": { "documentation": "Coordenada Z do player (atalho para position.z)." },
+  "@pforge/global/player.speed": { "documentation": "Velocidade de movimento (padrão 8)." },
+  "@pforge/global/player.jump": { "documentation": "Força do pulo (padrão 10)." },
+  "@pforge/global/player.gravity": { "documentation": "Gravidade aplicada ao player (padrão -22)." },
+  "@pforge/global/player.eye": { "documentation": "Altura dos olhos para a câmera (padrão 1.6)." },
+  "@pforge/global/player.sens": { "documentation": "Sensibilidade do mouse (padrão 0.005)." },
+  "@pforge/global/player.onGround": { "documentation": "true se o player está no chão." },
+  "@pforge/global/player.vy": { "documentation": "Velocidade vertical atual." },
+  "@pforge/global/player.walkPhase": { "documentation": "Fase da animação de caminhada (para scripts avançados)." },
+  "@pforge/global/player.moveBlend": { "documentation": "Blend entre idle e andando (0 a 1)." },
+  "@pforge/global/player.multiplayer": { "documentation": "Se true (padrão), o player nativo sincroniza posição via BroadcastChannel." },
+  "@pforge/global/player.cameraDistance": { "documentation": "Distância da câmera em terceira pessoa (padrão 6)." },
+  "@pforge/global/player.cameraDistanceMin": { "documentation": "Distância mínima da câmera em terceira pessoa (padrão 0)." },
+  "@pforge/global/player.cameraDistanceMax": { "documentation": "Distância máxima da câmera em terceira pessoa (padrão 18)." },
+  "@pforge/global/player.enabled": { "documentation": "Se false, desliga a física/câmera/avatar nativos sem desspawnar." },
+  "@pforge/global/player.teleport": {
+    "documentation": "Teleporta o player para (x, y, z).",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/player.teleport/param/0" },
+      { "name": "y", "documentation": "@pforge/global/player.teleport/param/1" },
+      { "name": "z", "documentation": "@pforge/global/player.teleport/param/2" }
+    ],
+    "code_sample": "player.teleport(0, 0, 0)"
+  },
+  "@pforge/global/player.teleport/param/0": { "documentation": "Coordenada X de destino." },
+  "@pforge/global/player.teleport/param/1": { "documentation": "Coordenada Y de destino." },
+  "@pforge/global/player.teleport/param/2": { "documentation": "Coordenada Z de destino." },
+  "@pforge/global/player.setLook": {
+    "documentation": "Define o yaw e o pitch da câmera.",
+    "params": [
+      { "name": "yaw", "documentation": "@pforge/global/player.setLook/param/0" },
+      { "name": "pitch", "documentation": "@pforge/global/player.setLook/param/1" }
+    ],
+    "code_sample": "player.setLook(math.rad(90), -0.1)"
+  },
+  "@pforge/global/player.setLook/param/0": { "documentation": "Ângulo horizontal em radianos." },
+  "@pforge/global/player.setLook/param/1": { "documentation": "Ângulo vertical em radianos." },
+  "@pforge/global/player.toggleCamera": {
+    "documentation": "Alterna entre primeira e terceira pessoa (só funciona se player.Camera = \"both\").",
+    "code_sample": "player.toggleCamera()"
+  }
+  
 }
