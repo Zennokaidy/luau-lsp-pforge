@@ -3745,9 +3745,8 @@
   },
   "@pforge/global/ServerConnection": {
     "documentation": "Client-side connection to a Server."
-  }
-
-"@pforge/global/player": {
+  },
+  "@pforge/global/player": {
   "documentation": "O player local. Controla movimento, câmera e avatar nativo.",
   "keys": {
     "Camera": "@pforge/global/player.Camera",
