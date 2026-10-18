@@ -119,6 +119,33 @@ type Audio = {
     playMusic: (name: string) -> MusicHandle,
 }
 
+type PlayerPosition = { x: number, y: number, z: number }
+type Player = {
+    Camera: string,
+    position: PlayerPosition,
+    x: number,
+    y: number,
+    z: number,
+    speed: number,
+    jump: number,
+    gravity: number,
+    eye: number,
+    sens: number,
+    onGround: boolean,
+    vy: number,
+    walkPhase: number,
+    moveBlend: number,
+    multiplayer: boolean,
+    cameraDistance: number,
+    cameraDistanceMin: number,
+    cameraDistanceMax: number,
+    enabled: boolean,
+    teleport: (x: number, y: number, z: number) -> (),
+    setLook: (yaw: number, pitch: number) -> (),
+    toggleCamera: () -> (),
+}
+declare player: Player
+
 type AssetManager = {
     loadFont: (path: string) -> (),
     loadImage: (path: string, callback: ((PForgeImage?) -> ())?) -> any,
