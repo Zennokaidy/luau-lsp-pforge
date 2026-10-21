@@ -3398,8 +3398,10 @@
     "code_sample": "xpcall(function()\n    error(\"failure\")\nend, function(err)\n    print(\"Caught error:\", err)\nend)"
   },
   "@pforge/global/screen": {
-    "documentation": "2D drawing API. Origin (0,0) is the center of the screen. 1 unit = 100 pixels.",
+    "documentation": "2D drawing API. Origin (0,0) is the center of the screen. 1 unit = 100 px. All colors accept either a <code>#rrggbb</code> string or a <code>0xRRGGBB</code> number.",
     "keys": {
+      "width": "@pforge/global/screen.width",
+      "height": "@pforge/global/screen.height",
       "clear": "@pforge/global/screen.clear",
       "setColor": "@pforge/global/screen.setColor",
       "setAlpha": "@pforge/global/screen.setAlpha",
@@ -3408,9 +3410,13 @@
       "setTranslation": "@pforge/global/screen.setTranslation",
       "setScale": "@pforge/global/screen.setScale",
       "setRotation": "@pforge/global/screen.setRotation",
+      "setDrawAnchor": "@pforge/global/screen.setDrawAnchor",
+      "setDrawRotation": "@pforge/global/screen.setDrawRotation",
+      "setDrawScale": "@pforge/global/screen.setDrawScale",
       "setPixelated": "@pforge/global/screen.setPixelated",
       "setLineWidth": "@pforge/global/screen.setLineWidth",
       "setLineDash": "@pforge/global/screen.setLineDash",
+      "setCursorVisible": "@pforge/global/screen.setCursorVisible",
       "fillRect": "@pforge/global/screen.fillRect",
       "drawRect": "@pforge/global/screen.drawRect",
       "fillRound": "@pforge/global/screen.fillRound",
@@ -3421,383 +3427,1736 @@
       "drawText": "@pforge/global/screen.drawText",
       "textWidth": "@pforge/global/screen.textWidth",
       "drawSprite": "@pforge/global/screen.drawSprite",
-      "drawImage": "@pforge/global/screen.drawImage",
-      "drawMap": "@pforge/global/screen.drawMap"
-    }
+      "drawImage": "@pforge/global/screen.drawImage"
+    },
+    "code_sample": "screen.setColor(\"#4fa8d8\")\nscreen.fillRect(0, 0, 2, 1)\n\nscreen.drawText(\"Hello!\", 0, 0.8, 0.25, \"#fff\")"
+  },
+  "@pforge/global/screen.width": {
+    "documentation": "Read-only. The current screen width in units. Re-evaluates on resize.",
+    "code_sample": "print(screen.width) -- e.g. 12.8 on a 1280px wide canvas"
+  },
+  "@pforge/global/screen.height": {
+    "documentation": "Read-only. The current screen height in units."
   },
   "@pforge/global/screen.clear": {
-    "documentation": "Clears the screen with a color.",
+    "documentation": "Fills the entire canvas with <code>color</code>, resetting any pending transform.",
+    "params": [
+      { "name": "color", "documentation": "@pforge/global/screen.clear/param/0" }
+    ],
     "code_sample": "screen.clear(\"#0f1115\")"
   },
+  "@pforge/global/screen.clear/param/0": {
+    "documentation": "Fill color. Defaults to <code>#000000</code>."
+  },
   "@pforge/global/screen.setColor": {
-    "documentation": "Sets the current color used by fill/stroke.",
+    "documentation": "Sets the current fill/stroke color used by subsequent <code>fill*</code>/<code>draw*</code> calls that don't override it.",
+    "params": [
+      { "name": "color", "documentation": "@pforge/global/screen.setColor/param/0" }
+    ],
     "code_sample": "screen.setColor(\"#4fa8d8\")"
   },
+  "@pforge/global/screen.setColor/param/0": { "documentation": "Hex string (<code>#rrggbb</code>) or <code>0xRRGGBB</code> number." },
   "@pforge/global/screen.setAlpha": {
-    "documentation": "Sets global alpha (0.0 to 1.0).",
+    "documentation": "Sets global transparency for subsequent draws.",
+    "params": [
+      { "name": "alpha", "documentation": "@pforge/global/screen.setAlpha/param/0" }
+    ],
     "code_sample": "screen.setAlpha(0.5)"
   },
+  "@pforge/global/screen.setAlpha/param/0": { "documentation": "Number in <code>[0, 1]</code>." },
   "@pforge/global/screen.setBlending": {
-    "documentation": "Sets the blending mode (normal, additive, multiply, screen, ...).",
+    "documentation": "Sets the composite mode. Accepts <code>\"normal\"</code>, <code>\"additive\"</code>, <code>\"multiply\"</code>, <code>\"screen\"</code>, <code>\"overlay\"</code>, <code>\"darken\"</code>, <code>\"lighten\"</code>, <code>\"difference\"</code>, <code>\"exclusion\"</code>, <code>\"hue\"</code>, <code>\"saturation\"</code>, <code>\"color\"</code>, <code>\"luminosity\"</code>.",
+    "params": [
+      { "name": "mode", "documentation": "@pforge/global/screen.setBlending/param/0" }
+    ],
     "code_sample": "screen.setBlending(\"additive\")"
   },
+  "@pforge/global/screen.setBlending/param/0": { "documentation": "Blending mode name." },
   "@pforge/global/screen.setFont": {
-    "documentation": "Sets the font used for text.",
-    "code_sample": "screen.setFont(\"Arial\")"
+    "documentation": "Sets the font family used by <code>drawText</code> and <code>textWidth</code>.",
+    "params": [
+      { "name": "font", "documentation": "@pforge/global/screen.setFont/param/0" }
+    ],
+    "code_sample": "screen.setFont(\"Fira Mono\")"
   },
+  "@pforge/global/screen.setFont/param/0": { "documentation": "CSS font-family string." },
   "@pforge/global/screen.setTranslation": {
-    "documentation": "Moves the drawing origin.",
-    "code_sample": "screen.setTranslation(1, 2)"
+    "documentation": "Moves the drawing origin (in units). Applies to all subsequent draws.",
+    "params": [
+      { "name": "tx", "documentation": "@pforge/global/screen.setTranslation/param/0" },
+      { "name": "ty", "documentation": "@pforge/global/screen.setTranslation/param/1" }
+    ],
+    "code_sample": "screen.setTranslation(2, -1)"
   },
+  "@pforge/global/screen.setTranslation/param/0": { "documentation": "X offset in units." },
+  "@pforge/global/screen.setTranslation/param/1": { "documentation": "Y offset in units." },
   "@pforge/global/screen.setScale": {
-    "documentation": "Sets global scale.",
+    "documentation": "Scales all subsequent draws around the screen origin.",
+    "params": [
+      { "name": "sx", "documentation": "@pforge/global/screen.setScale/param/0" },
+      { "name": "sy", "documentation": "@pforge/global/screen.setScale/param/1" }
+    ],
     "code_sample": "screen.setScale(2, 2)"
   },
+  "@pforge/global/screen.setScale/param/0": { "documentation": "X scale multiplier." },
+  "@pforge/global/screen.setScale/param/1": { "documentation": "Y scale multiplier." },
   "@pforge/global/screen.setRotation": {
-    "documentation": "Rotates everything (radians).",
+    "documentation": "Rotates all subsequent draws (radians) around the current origin.",
+    "params": [
+      { "name": "angle", "documentation": "@pforge/global/screen.setRotation/param/0" }
+    ],
     "code_sample": "screen.setRotation(math.pi / 4)"
   },
+  "@pforge/global/screen.setRotation/param/0": { "documentation": "Rotation angle in radians." },
+  "@pforge/global/screen.setDrawAnchor": {
+    "documentation": "Changes the anchor used by individual shape draws. <code>(0.5, 0.5)</code> = center, <code>(0, 0)</code> = bottom-left, <code>(1, 1)</code> = top-right.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.setDrawAnchor/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.setDrawAnchor/param/1" }
+    ],
+    "code_sample": "screen.setDrawAnchor(0, 0) -- bottom-left aligned shapes"
+  },
+  "@pforge/global/screen.setDrawAnchor/param/0": { "documentation": "Anchor X in [0, 1]." },
+  "@pforge/global/screen.setDrawAnchor/param/1": { "documentation": "Anchor Y in [0, 1]." },
+  "@pforge/global/screen.setDrawRotation": {
+    "documentation": "Rotates individual shapes around their draw anchor (radians).",
+    "params": [
+      { "name": "angle", "documentation": "@pforge/global/screen.setDrawRotation/param/0" }
+    ],
+    "code_sample": "screen.setDrawRotation(math.rad(45))"
+  },
+  "@pforge/global/screen.setDrawRotation/param/0": { "documentation": "Angle in radians." },
+  "@pforge/global/screen.setDrawScale": {
+    "documentation": "Scales individual shapes around their draw anchor.",
+    "params": [
+      { "name": "sx", "documentation": "@pforge/global/screen.setDrawScale/param/0" },
+      { "name": "sy", "documentation": "@pforge/global/screen.setDrawScale/param/1" }
+    ]
+  },
+  "@pforge/global/screen.setDrawScale/param/0": { "documentation": "X scale." },
+  "@pforge/global/screen.setDrawScale/param/1": { "documentation": "Y scale." },
   "@pforge/global/screen.setPixelated": {
-    "documentation": "Disables image smoothing (pixel art).",
+    "documentation": "Toggles image smoothing. Set <code>true</code> for crisp pixel-art rendering.",
+    "params": [
+      { "name": "value", "documentation": "@pforge/global/screen.setPixelated/param/0" }
+    ],
     "code_sample": "screen.setPixelated(true)"
   },
+  "@pforge/global/screen.setPixelated/param/0": { "documentation": "Boolean." },
   "@pforge/global/screen.setLineWidth": {
-    "documentation": "Sets the stroke line width in units.",
+    "documentation": "Sets the stroke width for <code>draw*</code> primitives (in units).",
+    "params": [
+      { "name": "width", "documentation": "@pforge/global/screen.setLineWidth/param/0" }
+    ],
     "code_sample": "screen.setLineWidth(0.05)"
   },
+  "@pforge/global/screen.setLineWidth/param/0": { "documentation": "Stroke width in units." },
   "@pforge/global/screen.setLineDash": {
-    "documentation": "Sets line dash pattern. E.g. {0.1, 0.05}.",
+    "documentation": "Sets the dash pattern for strokes. Pass a table of alternating dash/gap lengths (in units).",
+    "params": [
+      { "name": "pattern", "documentation": "@pforge/global/screen.setLineDash/param/0" }
+    ],
     "code_sample": "screen.setLineDash({0.1, 0.05})"
   },
+  "@pforge/global/screen.setLineDash/param/0": { "documentation": "Table of numbers; empty table = solid." },
+  "@pforge/global/screen.setCursorVisible": {
+    "documentation": "Shows or hides the mouse cursor over the game canvas.",
+    "params": [
+      { "name": "visible", "documentation": "@pforge/global/screen.setCursorVisible/param/0" }
+    ]
+  },
+  "@pforge/global/screen.setCursorVisible/param/0": { "documentation": "Boolean." },
   "@pforge/global/screen.fillRect": {
-    "documentation": "Fills a rectangle. (x, y) is the center.",
-    "code_sample": "screen.fillRect(0, 0, 1, 1, \"#f00\")"
+    "documentation": "Fills a rectangle. <code>(x, y)</code> is the center by default (see <code>setDrawAnchor</code>).",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.fillRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.fillRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/screen.fillRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/screen.fillRect/param/3" },
+      { "name": "color", "documentation": "@pforge/global/screen.fillRect/param/4" }
+    ],
+    "code_sample": "screen.fillRect(0, 0, 2, 1, \"#4fa8d8\")"
   },
+  "@pforge/global/screen.fillRect/param/0": { "documentation": "Center X in units." },
+  "@pforge/global/screen.fillRect/param/1": { "documentation": "Center Y in units." },
+  "@pforge/global/screen.fillRect/param/2": { "documentation": "Width in units." },
+  "@pforge/global/screen.fillRect/param/3": { "documentation": "Height in units." },
+  "@pforge/global/screen.fillRect/param/4": { "documentation": "Optional color; falls back to <code>setColor</code>." },
   "@pforge/global/screen.drawRect": {
-    "documentation": "Draws the outline of a rectangle.",
-    "code_sample": "screen.drawRect(0, 0, 1, 1, \"#fff\")"
+    "documentation": "Strokes the outline of a rectangle.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.drawRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.drawRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/screen.drawRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/screen.drawRect/param/3" },
+      { "name": "color", "documentation": "@pforge/global/screen.drawRect/param/4" }
+    ]
   },
+  "@pforge/global/screen.drawRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/screen.drawRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/screen.drawRect/param/2": { "documentation": "Width." },
+  "@pforge/global/screen.drawRect/param/3": { "documentation": "Height." },
+  "@pforge/global/screen.drawRect/param/4": { "documentation": "Stroke color." },
   "@pforge/global/screen.fillRound": {
-    "documentation": "Fills an ellipse.",
-    "code_sample": "screen.fillRound(0, 0, 1, 1, \"#0f0\")"
+    "documentation": "Fills an ellipse centered at <code>(x, y)</code>.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.fillRound/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.fillRound/param/1" },
+      { "name": "width", "documentation": "@pforge/global/screen.fillRound/param/2" },
+      { "name": "height", "documentation": "@pforge/global/screen.fillRound/param/3" },
+      { "name": "color", "documentation": "@pforge/global/screen.fillRound/param/4" }
+    ],
+    "code_sample": "screen.fillRound(0, 0, 1, 1, \"#6bcf7f\")"
   },
+  "@pforge/global/screen.fillRound/param/0": { "documentation": "Center X." },
+  "@pforge/global/screen.fillRound/param/1": { "documentation": "Center Y." },
+  "@pforge/global/screen.fillRound/param/2": { "documentation": "Horizontal diameter." },
+  "@pforge/global/screen.fillRound/param/3": { "documentation": "Vertical diameter." },
+  "@pforge/global/screen.fillRound/param/4": { "documentation": "Fill color." },
   "@pforge/global/screen.drawRound": {
-    "documentation": "Draws the outline of an ellipse.",
-    "code_sample": "screen.drawRound(0, 0, 1, 1, \"#fff\")"
+    "documentation": "Strokes an ellipse outline.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.drawRound/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.drawRound/param/1" },
+      { "name": "width", "documentation": "@pforge/global/screen.drawRound/param/2" },
+      { "name": "height", "documentation": "@pforge/global/screen.drawRound/param/3" },
+      { "name": "color", "documentation": "@pforge/global/screen.drawRound/param/4" }
+    ]
   },
+  "@pforge/global/screen.drawRound/param/0": { "documentation": "Center X." },
+  "@pforge/global/screen.drawRound/param/1": { "documentation": "Center Y." },
+  "@pforge/global/screen.drawRound/param/2": { "documentation": "Horizontal diameter." },
+  "@pforge/global/screen.drawRound/param/3": { "documentation": "Vertical diameter." },
+  "@pforge/global/screen.drawRound/param/4": { "documentation": "Stroke color." },
   "@pforge/global/screen.fillRoundRect": {
     "documentation": "Fills a rounded rectangle.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.fillRoundRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.fillRoundRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/screen.fillRoundRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/screen.fillRoundRect/param/3" },
+      { "name": "radius", "documentation": "@pforge/global/screen.fillRoundRect/param/4" },
+      { "name": "color", "documentation": "@pforge/global/screen.fillRoundRect/param/5" }
+    ],
     "code_sample": "screen.fillRoundRect(0, 0, 2, 1, 0.2, \"#4fa8d8\")"
   },
+  "@pforge/global/screen.fillRoundRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/screen.fillRoundRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/screen.fillRoundRect/param/2": { "documentation": "Width in units." },
+  "@pforge/global/screen.fillRoundRect/param/3": { "documentation": "Height in units." },
+  "@pforge/global/screen.fillRoundRect/param/4": { "documentation": "Corner radius in units." },
+  "@pforge/global/screen.fillRoundRect/param/5": { "documentation": "Fill color." },
   "@pforge/global/screen.drawRoundRect": {
-    "documentation": "Draws the outline of a rounded rectangle.",
-    "code_sample": "screen.drawRoundRect(0, 0, 2, 1, 0.2, \"#fff\")"
+    "documentation": "Strokes a rounded rectangle.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/screen.drawRoundRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/screen.drawRoundRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/screen.drawRoundRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/screen.drawRoundRect/param/3" },
+      { "name": "radius", "documentation": "@pforge/global/screen.drawRoundRect/param/4" },
+      { "name": "color", "documentation": "@pforge/global/screen.drawRoundRect/param/5" }
+    ]
   },
+  "@pforge/global/screen.drawRoundRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/screen.drawRoundRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/screen.drawRoundRect/param/2": { "documentation": "Width." },
+  "@pforge/global/screen.drawRoundRect/param/3": { "documentation": "Height." },
+  "@pforge/global/screen.drawRoundRect/param/4": { "documentation": "Corner radius." },
+  "@pforge/global/screen.drawRoundRect/param/5": { "documentation": "Stroke color." },
   "@pforge/global/screen.drawLine": {
-    "documentation": "Draws a line from (x1, y1) to (x2, y2).",
+    "documentation": "Draws a straight line using the current stroke settings.",
+    "params": [
+      { "name": "x1", "documentation": "@pforge/global/screen.drawLine/param/0" },
+      { "name": "y1", "documentation": "@pforge/global/screen.drawLine/param/1" },
+      { "name": "x2", "documentation": "@pforge/global/screen.drawLine/param/2" },
+      { "name": "y2", "documentation": "@pforge/global/screen.drawLine/param/3" }
+    ],
     "code_sample": "screen.drawLine(-1, 0, 1, 0)"
   },
+  "@pforge/global/screen.drawLine/param/0": { "documentation": "Start X." },
+  "@pforge/global/screen.drawLine/param/1": { "documentation": "Start Y." },
+  "@pforge/global/screen.drawLine/param/2": { "documentation": "End X." },
+  "@pforge/global/screen.drawLine/param/3": { "documentation": "End Y." },
   "@pforge/global/screen.drawText": {
-    "documentation": "Draws text. size is in units (0.2 = 20 pixels).",
-    "code_sample": "screen.drawText(\"Hi\", 0, 0, 0.2, \"#fff\")"
+    "documentation": "Draws a string. <code>size</code> is in units (<code>0.25</code> = 25px).",
+    "params": [
+      { "name": "text", "documentation": "@pforge/global/screen.drawText/param/0" },
+      { "name": "x", "documentation": "@pforge/global/screen.drawText/param/1" },
+      { "name": "y", "documentation": "@pforge/global/screen.drawText/param/2" },
+      { "name": "size", "documentation": "@pforge/global/screen.drawText/param/3" },
+      { "name": "color", "documentation": "@pforge/global/screen.drawText/param/4" }
+    ],
+    "code_sample": "screen.drawText(\"Hello\", 0, 0, 0.25, \"#ffffff\")"
   },
+  "@pforge/global/screen.drawText/param/0": { "documentation": "String to draw." },
+  "@pforge/global/screen.drawText/param/1": { "documentation": "Center X." },
+  "@pforge/global/screen.drawText/param/2": { "documentation": "Center Y." },
+  "@pforge/global/screen.drawText/param/3": { "documentation": "Font size in units." },
+  "@pforge/global/screen.drawText/param/4": { "documentation": "Fill color." },
   "@pforge/global/screen.textWidth": {
-    "documentation": "Returns the width of a text string in units.",
-    "code_sample": "local w = screen.textWidth(\"Hello\", 0.2)"
+    "documentation": "Returns the width of <code>text</code> in units when rendered at <code>size</code> with the current font.",
+    "params": [
+      { "name": "text", "documentation": "@pforge/global/screen.textWidth/param/0" },
+      { "name": "size", "documentation": "@pforge/global/screen.textWidth/param/1" }
+    ],
+    "returns": [
+      { "name": "width", "documentation": "@pforge/global/screen.textWidth/return/0" }
+    ],
+    "code_sample": "local w = screen.textWidth(\"Hello\", 0.25)\nscreen.fillRect(0, -0.5, w, 0.02)"
   },
+  "@pforge/global/screen.textWidth/param/0": { "documentation": "String to measure." },
+  "@pforge/global/screen.textWidth/param/1": { "documentation": "Font size in units." },
+  "@pforge/global/screen.textWidth/return/0": { "documentation": "Width in units." },
   "@pforge/global/screen.drawSprite": {
-    "documentation": "Draws a sprite registered in the sprites table.",
-    "code_sample": "screen.drawSprite(\"player\", 0, 0, 1)"
+    "documentation": "Draws a sprite previously registered in <code>sprites</code>.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/screen.drawSprite/param/0" },
+      { "name": "x", "documentation": "@pforge/global/screen.drawSprite/param/1" },
+      { "name": "y", "documentation": "@pforge/global/screen.drawSprite/param/2" },
+      { "name": "width", "documentation": "@pforge/global/screen.drawSprite/param/3" },
+      { "name": "height", "documentation": "@pforge/global/screen.drawSprite/param/4" }
+    ],
+    "code_sample": "sprites[\"player\"] = mySprite\nscreen.drawSprite(\"player\", 0, 0, 1)"
   },
+  "@pforge/global/screen.drawSprite/param/0": { "documentation": "Key in the <code>sprites</code> table." },
+  "@pforge/global/screen.drawSprite/param/1": { "documentation": "Center X." },
+  "@pforge/global/screen.drawSprite/param/2": { "documentation": "Center Y." },
+  "@pforge/global/screen.drawSprite/param/3": { "documentation": "Width in units." },
+  "@pforge/global/screen.drawSprite/param/4": { "documentation": "Optional height; preserves aspect ratio if omitted." },
   "@pforge/global/screen.drawImage": {
-    "documentation": "Draws a PForgeImage at the given position.",
-    "code_sample": "screen.drawImage(myImg, 0, 0, 1)"
+    "documentation": "Draws a <code>PForgeImage</code> at <code>(x, y)</code>.",
+    "params": [
+      { "name": "image", "documentation": "@pforge/global/screen.drawImage/param/0" },
+      { "name": "x", "documentation": "@pforge/global/screen.drawImage/param/1" },
+      { "name": "y", "documentation": "@pforge/global/screen.drawImage/param/2" },
+      { "name": "width", "documentation": "@pforge/global/screen.drawImage/param/3" },
+      { "name": "height", "documentation": "@pforge/global/screen.drawImage/param/4" }
+    ]
   },
-  "@pforge/global/screen.drawMap": {
-    "documentation": "Draws a tilemap registered in the maps table.",
-    "code_sample": "screen.drawMap(\"level1\", 0, 0, 10, 8)"
-  },
+  "@pforge/global/screen.drawImage/param/0": { "documentation": "A <code>PForgeImage</code>." },
+  "@pforge/global/screen.drawImage/param/1": { "documentation": "Center X." },
+  "@pforge/global/screen.drawImage/param/2": { "documentation": "Center Y." },
+  "@pforge/global/screen.drawImage/param/3": { "documentation": "Width in units." },
+  "@pforge/global/screen.drawImage/param/4": { "documentation": "Optional height." },
 
   "@pforge/global/keyboard": {
-    "documentation": "Keyboard input state.",
+    "documentation": "Keyboard state. Access any key by name (<code>keyboard.W</code>, <code>keyboard.SPACE</code>, <code>keyboard.LEFT</code>) — returns <code>1</code> while held, <code>false</code> otherwise. Also exposes <code>press</code> / <code>release</code> proxies that return <code>1</code> on the exact frame the key changed.",
     "keys": {
       "press": "@pforge/global/keyboard.press",
       "release": "@pforge/global/keyboard.release"
-    }
+    },
+    "code_sample": "if keyboard.W == 1 then\n  player.x = player.x + 0.1\nend\n\nif keyboard.press.SPACE == 1 then\n  print(\"jumped this frame\")\nend\n\nif keyboard.release.E == 1 then\n  print(\"E was released\")\nend"
   },
   "@pforge/global/keyboard.press": {
-    "documentation": "1 only on the frame the key was pressed.",
-    "code_sample": "if keyboard.press.SPACE == 1 then\n  print(\"jump\")\nend"
+    "documentation": "Proxy returning <code>1</code> only on the frame the key was pressed (i.e., the down edge).",
+    "params": [
+      { "name": "key", "documentation": "@pforge/global/keyboard.press/param/0" }
+    ],
+    "code_sample": "if keyboard.press.SPACE == 1 then\n  audio.beep(\"C5 E5 G5\")\nend"
+  },
+  "@pforge/global/keyboard.press/param/0": {
+    "documentation": "Key name. Special keys use uppercase names: <code>SPACE</code>, <code>ENTER</code>, <code>SHIFT</code>, <code>CTRL</code>, <code>ALT</code>, <code>ESCAPE</code>, <code>TAB</code>, <code>BACKSPACE</code>, <code>LEFT</code>, <code>RIGHT</code>, <code>UP</code>, <code>DOWN</code>. Regular keys are single characters (case-insensitive): <code>A</code>, <code>B</code>, <code>1</code>, etc."
   },
   "@pforge/global/keyboard.release": {
-    "documentation": "1 only on the frame the key was released."
+    "documentation": "Proxy returning <code>1</code> only on the frame the key was released (the up edge).",
+    "params": [
+      { "name": "key", "documentation": "@pforge/global/keyboard.release/param/0" }
+    ]
   },
+  "@pforge/global/keyboard.release/param/0": { "documentation": "Same key names as <code>keyboard.press</code>." },
 
   "@pforge/global/mouse": {
-    "documentation": "Mouse input. Coordinates are in units, origin at the screen center.",
-    "code_sample": "if mouse.left == 1 then\n  print(mouse.x, mouse.y)\nend"
+    "documentation": "Mouse state. Coordinates are in units, origin at the screen center. Y axis points up.",
+    "keys": {
+      "x": "@pforge/global/mouse.x",
+      "y": "@pforge/global/mouse.y",
+      "left": "@pforge/global/mouse.left",
+      "middle": "@pforge/global/mouse.middle",
+      "right": "@pforge/global/mouse.right",
+      "pressed": "@pforge/global/mouse.pressed",
+      "press": "@pforge/global/mouse.press",
+      "release": "@pforge/global/mouse.release",
+      "wheel": "@pforge/global/mouse.wheel"
+    },
+    "code_sample": "if mouse.left == 1 then\n  print(mouse.x, mouse.y)\nend\n\nif mouse.press == 1 then\n  print(\"clicked\")\nend"
   },
+  "@pforge/global/mouse.x": { "documentation": "Current mouse X in units (relative to the screen center)." },
+  "@pforge/global/mouse.y": { "documentation": "Current mouse Y in units (positive = up)." },
+  "@pforge/global/mouse.left": { "documentation": "<code>1</code> while the left button is held." },
+  "@pforge/global/mouse.middle": { "documentation": "<code>1</code> while the middle button is held." },
+  "@pforge/global/mouse.right": { "documentation": "<code>1</code> while the right button is held." },
+  "@pforge/global/mouse.pressed": { "documentation": "<code>1</code> while any button is held." },
+  "@pforge/global/mouse.press": { "documentation": "<code>1</code> on the frame a button was pressed." },
+  "@pforge/global/mouse.release": { "documentation": "<code>1</code> on the frame a button was released." },
+  "@pforge/global/mouse.wheel": { "documentation": "<code>1</code> if wheel scrolled up, <code>-1</code> if down, <code>0</code> otherwise." },
 
   "@pforge/global/touch": {
-    "documentation": "Touch input.",
-    "code_sample": "if touch.touching == 1 then\n  print(touch.x, touch.y)\nend"
+    "documentation": "Touch input. Works on touch-enabled devices.",
+    "keys": {
+      "touching": "@pforge/global/touch.touching",
+      "x": "@pforge/global/touch.x",
+      "y": "@pforge/global/touch.y",
+      "press": "@pforge/global/touch.press",
+      "release": "@pforge/global/touch.release",
+      "touches": "@pforge/global/touch.touches"
+    },
+    "code_sample": "if touch.touching == 1 then\n  screen.fillRound(touch.x, touch.y, 0.5, 0.5, \"#fff\")\nend"
   },
+  "@pforge/global/touch.touching": { "documentation": "<code>1</code> while at least one finger is on the screen." },
+  "@pforge/global/touch.x": { "documentation": "X position of the primary touch, in units." },
+  "@pforge/global/touch.y": { "documentation": "Y position of the primary touch, in units (positive = up)." },
+  "@pforge/global/touch.press": { "documentation": "<code>1</code> on the frame a touch started." },
+  "@pforge/global/touch.release": { "documentation": "<code>1</code> on the frame the last touch ended." },
+  "@pforge/global/touch.touches": { "documentation": "Array of active <code>Touch</code> objects, each with <code>clientX</code>, <code>clientY</code>, <code>identifier</code>, etc." },
 
   "@pforge/global/gamepad": {
-    "documentation": "Gamepad input. Returns 0 if no controller is connected."
+    "documentation": "Gamepad state. Reads the first connected controller. Any face/shoulder button returns <code>1</code> while held, <code>0</code> otherwise (and <code>0</code> if no controller is connected).",
+    "keys": {
+      "A": "@pforge/global/gamepad.A",
+      "B": "@pforge/global/gamepad.B",
+      "X": "@pforge/global/gamepad.X",
+      "Y": "@pforge/global/gamepad.Y",
+      "LB": "@pforge/global/gamepad.LB",
+      "RB": "@pforge/global/gamepad.RB",
+      "LT": "@pforge/global/gamepad.LT",
+      "RT": "@pforge/global/gamepad.RT"
+    },
+    "code_sample": "if gamepad.A == 1 then\n  print(\"jump\")\nend\nif gamepad.LT == 1 then\n  print(\"aim\")\nend"
   },
+  "@pforge/global/gamepad.A": { "documentation": "A / Cross button." },
+  "@pforge/global/gamepad.B": { "documentation": "B / Circle button." },
+  "@pforge/global/gamepad.X": { "documentation": "X / Square button." },
+  "@pforge/global/gamepad.Y": { "documentation": "Y / Triangle button." },
+  "@pforge/global/gamepad.LB": { "documentation": "Left bumper." },
+  "@pforge/global/gamepad.RB": { "documentation": "Right bumper." },
+  "@pforge/global/gamepad.LT": { "documentation": "Left trigger." },
+  "@pforge/global/gamepad.RT": { "documentation": "Right trigger." },
 
   "@pforge/global/system": {
-    "documentation": "System utilities.",
+    "documentation": "System utilities: time, alerts, file IO, environment info.",
     "keys": {
       "time": "@pforge/global/system.time",
+      "language": "@pforge/global/system.language",
+      "tabId": "@pforge/global/system.tabId",
+      "inputs": "@pforge/global/system.inputs",
+      "prompt": "@pforge/global/system.prompt",
       "say": "@pforge/global/system.say",
-      "file": "@pforge/global/system.file"
+      "file": "@pforge/global/system.file",
+      "project": "@pforge/global/system.project"
     }
   },
   "@pforge/global/system.time": {
-    "documentation": "Timestamp in milliseconds.",
-    "code_sample": "local t = system.time()"
+    "documentation": "Returns the current timestamp in milliseconds (Unix epoch).",
+    "returns": [
+      { "name": "ms", "documentation": "@pforge/global/system.time/return/0" }
+    ],
+    "code_sample": "local t0 = system.time()\n-- ... work ...\nprint(system.time() - t0, \"ms\")"
   },
+  "@pforge/global/system.time/return/0": { "documentation": "Timestamp in milliseconds." },
+  "@pforge/global/system.language": {
+    "documentation": "Browser language code, e.g. <code>\"en-US\"</code>."
+  },
+  "@pforge/global/system.tabId": {
+    "documentation": "Returns a stable per-tab identifier shared with the parent studio window. Used by <code>net.me()</code>.",
+    "returns": [
+      { "name": "id", "documentation": "@pforge/global/system.tabId/return/0" }
+    ],
+    "code_sample": "print(system.tabId()) -- e.g. \"p_ab12cd34\""
+  },
+  "@pforge/global/system.tabId/return/0": { "documentation": "String id." },
+  "@pforge/global/system.inputs": {
+    "documentation": "Object with <code>keyboard</code>, <code>mouse</code>, <code>touch</code>, <code>gamepad</code> flags (<code>0</code> or <code>1</code>).",
+    "code_sample": "if system.inputs.touch == 1 then\n  print(\"device supports touch\")\nend"
+  },
+  "@pforge/global/system.prompt": {
+    "documentation": "Shows a native prompt and invokes <code>callback</code> with <code>(ok, text)</code>.",
+    "params": [
+      { "name": "text", "documentation": "@pforge/global/system.prompt/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/system.prompt/param/1" }
+    ],
+    "code_sample": "system.prompt(\"Your name?\", function(ok, value)\n  if ok then print(value) end\nend)"
+  },
+  "@pforge/global/system.prompt/param/0": { "documentation": "Message displayed to the user." },
+  "@pforge/global/system.prompt/param/1": { "documentation": "Function <code>(ok, text)</code>." },
   "@pforge/global/system.say": {
-    "documentation": "Shows a native alert.",
-    "code_sample": "system.say(\"Hello\")"
+    "documentation": "Shows a native alert box.",
+    "params": [
+      { "name": "text", "documentation": "@pforge/global/system.say/param/0" }
+    ],
+    "code_sample": "system.say(\"Hello!\")"
   },
+  "@pforge/global/system.say/param/0": { "documentation": "Message to show." },
   "@pforge/global/system.file": {
-    "documentation": "File save/load helpers."
+    "documentation": "Save helpers.",
+    "keys": {
+      "save": "@pforge/global/system.file.save"
+    }
+  },
+  "@pforge/global/system.file.save": {
+    "documentation": "Downloads <code>obj</code> as a file. If <code>obj</code> is a <code>PForgeImage</code>, saves it as an image; otherwise serializes to JSON.",
+    "params": [
+      { "name": "obj", "documentation": "@pforge/global/system.file.save/param/0" },
+      { "name": "name", "documentation": "@pforge/global/system.file.save/param/1" },
+      { "name": "format", "documentation": "@pforge/global/system.file.save/param/2" },
+      { "name": "quality", "documentation": "@pforge/global/system.file.save/param/3" }
+    ],
+    "code_sample": "system.file.save({ score = 10 }, \"save\")\nsystem.file.save(img, \"screenshot\", \"png\")"
+  },
+  "@pforge/global/system.file.save/param/0": { "documentation": "Any value, or a <code>PForgeImage</code>." },
+  "@pforge/global/system.file.save/param/1": { "documentation": "Filename without extension." },
+  "@pforge/global/system.file.save/param/2": { "documentation": "Image format: <code>png</code>, <code>jpeg</code>, <code>webp</code>. Only used for <code>PForgeImage</code>." },
+  "@pforge/global/system.file.save/param/3": { "documentation": "Image quality 0-1 (JPEG/WebP)." },
+  "@pforge/global/system.project": {
+    "documentation": "Currently <code>nil</code> — reserved for future project metadata."
   },
 
   "@pforge/global/storage": {
-    "documentation": "localStorage-backed persistence.",
-    "code_sample": "storage.set(\"highscore\", 100)\nlocal hi = storage.get(\"highscore\", 0)"
+    "documentation": "Persistent key-value storage backed by <code>localStorage</code>. Keys are automatically prefixed with <code>pforge_</code>. Values are JSON-encoded.",
+    "keys": {
+      "set": "@pforge/global/storage.set",
+      "get": "@pforge/global/storage.get",
+      "keys": "@pforge/global/storage.keys"
+    },
+    "code_sample": "storage.set(\"highscore\", 100)\nlocal hi = storage.get(\"highscore\", 0)\nprint(hi)"
   },
+  "@pforge/global/storage.set": {
+    "documentation": "Stores <code>value</code> under <code>name</code>. Value must be JSON-serializable.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/storage.set/param/0" },
+      { "name": "value", "documentation": "@pforge/global/storage.set/param/1" }
+    ]
+  },
+  "@pforge/global/storage.set/param/0": { "documentation": "Key name." },
+  "@pforge/global/storage.set/param/1": { "documentation": "Any JSON-serializable value." },
+  "@pforge/global/storage.get": {
+    "documentation": "Retrieves the value stored under <code>name</code>. Returns <code>default</code> if not found or unparsable.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/storage.get/param/0" },
+      { "name": "default", "documentation": "@pforge/global/storage.get/param/1" }
+    ],
+    "returns": [
+      { "name": "value", "documentation": "@pforge/global/storage.get/return/0" }
+    ]
+  },
+  "@pforge/global/storage.get/param/0": { "documentation": "Key name." },
+  "@pforge/global/storage.get/param/1": { "documentation": "Value returned if the key is missing." },
+  "@pforge/global/storage.get/return/0": { "documentation": "Stored value or <code>default</code>." },
+  "@pforge/global/storage.keys": {
+    "documentation": "Returns a newline-separated string with all keys that start with <code>prefix</code> (without the <code>pforge_</code> prefix).",
+    "params": [
+      { "name": "prefix", "documentation": "@pforge/global/storage.keys/param/0" }
+    ],
+    "returns": [
+      { "name": "keys", "documentation": "@pforge/global/storage.keys/return/0" }
+    ],
+    "code_sample": "for k in string.gmatch(storage.keys(\"pos_\"), \"[^\\n]+\") do\n  print(k)\nend"
+  },
+  "@pforge/global/storage.keys/param/0": { "documentation": "Key prefix filter." },
+  "@pforge/global/storage.keys/return/0": { "documentation": "Newline-separated list of matching keys." },
 
   "@pforge/global/audio": {
-    "documentation": "Procedural sound playback.",
+    "documentation": "Procedural audio playback using Web Audio. Does nothing in studio mode.",
     "keys": {
       "beep": "@pforge/global/audio.beep",
+      "cancelBeeps": "@pforge/global/audio.cancelBeeps",
       "playSound": "@pforge/global/audio.playSound",
       "playMusic": "@pforge/global/audio.playMusic"
     }
   },
   "@pforge/global/audio.beep": {
-    "documentation": "Plays a sequence of notes. Syntax: \"C4 E4 G4\".",
-    "code_sample": "audio.beep(\"C4 E4 G4 C5\")"
+    "documentation": "Plays a note sequence. Syntax: space-separated note names (<code>C4</code>, <code>F#5</code>, <code>Bb3</code>) plus optional modifiers: <code>sine</code>/<code>square</code>/<code>saw</code>/<code>noise</code>, <code>duration &lt;ms&gt;</code>, <code>span &lt;%&gt;</code>, <code>tempo &lt;bpm&gt;</code>, <code>volume &lt;0-100&gt;</code>, <code>loop &lt;n&gt;</code>, <code>end</code>.",
+    "params": [
+      { "name": "sequence", "documentation": "@pforge/global/audio.beep/param/0" }
+    ],
+    "code_sample": "audio.beep(\"C4 E4 G4 C5\")\naudio.beep(\"sine volume 40 tempo 300 C5 D5 E5\")\naudio.beep(\"square C3 E3 G3 loop 3 end\")"
+  },
+  "@pforge/global/audio.beep/param/0": { "documentation": "Note sequence string." },
+  "@pforge/global/audio.cancelBeeps": {
+    "documentation": "Stops all currently playing beeps.",
+    "code_sample": "audio.cancelBeeps()"
   },
   "@pforge/global/audio.playSound": {
-    "documentation": "Plays a sound registered in the sounds table.",
-    "code_sample": "local s = audio.playSound(\"explosion\")\ns.setVolume(0.5)"
+    "documentation": "Plays a <code>PForgeSound</code> registered in <code>sounds</code>. Returns a handle with <code>setVolume</code>, <code>setPitch</code>, <code>setPan</code>, <code>getDuration</code>, <code>stop</code>.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/audio.playSound/param/0" }
+    ],
+    "returns": [
+      { "name": "handle", "documentation": "@pforge/global/audio.playSound/return/0" }
+    ],
+    "code_sample": "local h = audio.playSound(\"explosion\")\nh.setVolume(0.5)"
   },
+  "@pforge/global/audio.playSound/param/0": { "documentation": "Key in the <code>sounds</code> table." },
+  "@pforge/global/audio.playSound/return/0": { "documentation": "Playback handle." },
   "@pforge/global/audio.playMusic": {
-    "documentation": "Plays a sound registered in the music table."
+    "documentation": "Plays a <code>PForgeSound</code> registered in <code>music</code>. Returns a handle with <code>play</code>, <code>stop</code>, <code>setVolume</code>, <code>getDuration</code>, <code>getPosition</code>, <code>setPosition</code>.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/audio.playMusic/param/0" }
+    ],
+    "returns": [
+      { "name": "handle", "documentation": "@pforge/global/audio.playMusic/return/0" }
+    ]
   },
+  "@pforge/global/audio.playMusic/param/0": { "documentation": "Key in the <code>music</code> table." },
+  "@pforge/global/audio.playMusic/return/0": { "documentation": "Music handle." },
 
   "@pforge/global/asset_manager": {
-    "documentation": "Asset loading (images, JSON, text, CSV, Markdown, fonts).",
+    "documentation": "Load images, JSON, text, CSV and Markdown asynchronously.",
     "keys": {
       "loadImage": "@pforge/global/asset_manager.loadImage",
       "loadJSON": "@pforge/global/asset_manager.loadJSON",
-      "loadText": "@pforge/global/asset_manager.loadText"
+      "loadText": "@pforge/global/asset_manager.loadText",
+      "loadCSV": "@pforge/global/asset_manager.loadCSV",
+      "loadMarkdown": "@pforge/global/asset_manager.loadMarkdown",
+      "loadFont": "@pforge/global/asset_manager.loadFont"
     }
   },
   "@pforge/global/asset_manager.loadImage": {
-    "documentation": "Loads an image asynchronously.",
-    "code_sample": "asset_manager.loadImage(\"logo.png\", function(img)\n  logo = img\nend)"
+    "documentation": "Loads an image and passes the result (a <code>PForgeImage</code> or <code>nil</code> on error) to <code>callback</code>.",
+    "params": [
+      { "name": "path", "documentation": "@pforge/global/asset_manager.loadImage/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/asset_manager.loadImage/param/1" }
+    ],
+    "code_sample": "local logo = nil\nasset_manager.loadImage(\"logo.png\", function(img)\n  logo = img\nend)"
   },
+  "@pforge/global/asset_manager.loadImage/param/0": { "documentation": "URL or path." },
+  "@pforge/global/asset_manager.loadImage/param/1": { "documentation": "Receives <code>(PForgeImage|nil)</code>." },
   "@pforge/global/asset_manager.loadJSON": {
-    "documentation": "Fetches a JSON file.",
-    "code_sample": "asset_manager.loadJSON(\"data.json\", function(d)\n  print(d)\nend)"
+    "documentation": "Fetches JSON and passes the parsed value (or <code>nil</code>) to <code>callback</code>.",
+    "params": [
+      { "name": "path", "documentation": "@pforge/global/asset_manager.loadJSON/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/asset_manager.loadJSON/param/1" }
+    ],
+    "code_sample": "asset_manager.loadJSON(\"data.json\", function(d)\n  print(d.title)\nend)"
   },
+  "@pforge/global/asset_manager.loadJSON/param/0": { "documentation": "URL or path." },
+  "@pforge/global/asset_manager.loadJSON/param/1": { "documentation": "Receives parsed JSON or <code>nil</code>." },
   "@pforge/global/asset_manager.loadText": {
-    "documentation": "Fetches a text file."
+    "documentation": "Fetches a text file and passes the string (or <code>nil</code>) to <code>callback</code>.",
+    "params": [
+      { "name": "path", "documentation": "@pforge/global/asset_manager.loadText/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/asset_manager.loadText/param/1" }
+    ]
   },
+  "@pforge/global/asset_manager.loadText/param/0": { "documentation": "URL or path." },
+  "@pforge/global/asset_manager.loadText/param/1": { "documentation": "Receives the text or <code>nil</code>." },
+  "@pforge/global/asset_manager.loadCSV": {
+    "documentation": "Alias for <code>loadText</code> — parse with <code>string.split</code> yourself.",
+    "params": [
+      { "name": "path", "documentation": "@pforge/global/asset_manager.loadCSV/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/asset_manager.loadCSV/param/1" }
+    ]
+  },
+  "@pforge/global/asset_manager.loadCSV/param/0": { "documentation": "URL or path." },
+  "@pforge/global/asset_manager.loadCSV/param/1": { "documentation": "Receives the raw CSV string." },
+  "@pforge/global/asset_manager.loadMarkdown": {
+    "documentation": "Alias for <code>loadText</code>.",
+    "params": [
+      { "name": "path", "documentation": "@pforge/global/asset_manager.loadMarkdown/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/asset_manager.loadMarkdown/param/1" }
+    ]
+  },
+  "@pforge/global/asset_manager.loadMarkdown/param/0": { "documentation": "URL or path." },
+  "@pforge/global/asset_manager.loadMarkdown/param/1": { "documentation": "Receives the raw Markdown." },
+  "@pforge/global/asset_manager.loadFont": {
+    "documentation": "Registers a webfont for later use via <code>screen.setFont(name)</code>. Returns a Promise.",
+    "params": [
+      { "name": "path", "documentation": "@pforge/global/asset_manager.loadFont/param/0" }
+    ],
+    "code_sample": "asset_manager.loadFont(\"fonts/PressStart.ttf\")"
+  },
+  "@pforge/global/asset_manager.loadFont/param/0": { "documentation": "Font file URL." },
 
   "@pforge/global/gfx3d": {
-    "documentation": "3D graphics API (wrapper over Three.js). Call gfx3d.init() first.",
+    "documentation": "3D graphics API (thin wrapper over Three.js). Call <code>gfx3d.init</code> once, then add parts/lights and call <code>gfx3d.render</code> from <code>onDraw</code>.",
     "keys": {
       "init": "@pforge/global/gfx3d.init",
       "addLight": "@pforge/global/gfx3d.addLight",
       "addBox": "@pforge/global/gfx3d.addBox",
       "addSphere": "@pforge/global/gfx3d.addSphere",
       "addPlane": "@pforge/global/gfx3d.addPlane",
+      "addGrid": "@pforge/global/gfx3d.addGrid",
+      "addCylinder": "@pforge/global/gfx3d.addCylinder",
+      "addCone": "@pforge/global/gfx3d.addCone",
+      "addTorus": "@pforge/global/gfx3d.addTorus",
+      "get": "@pforge/global/gfx3d.get",
+      "remove": "@pforge/global/gfx3d.remove",
       "setCamera": "@pforge/global/gfx3d.setCamera",
+      "moveCamera": "@pforge/global/gfx3d.moveCamera",
       "render": "@pforge/global/gfx3d.render",
       "rotate": "@pforge/global/gfx3d.rotate",
-      "translate": "@pforge/global/gfx3d.translate"
+      "translate": "@pforge/global/gfx3d.translate",
+      "setPosition": "@pforge/global/gfx3d.setPosition",
+      "setRotation": "@pforge/global/gfx3d.setRotation",
+      "setScale": "@pforge/global/gfx3d.setScale",
+      "setVisible": "@pforge/global/gfx3d.setVisible",
+      "setColor": "@pforge/global/gfx3d.setColor",
+      "setCollidable": "@pforge/global/gfx3d.setCollidable",
+      "getCollidable": "@pforge/global/gfx3d.getCollidable",
+      "getPartTop": "@pforge/global/gfx3d.getPartTop",
+      "getPartBottom": "@pforge/global/gfx3d.getPartBottom",
+      "checkCollision": "@pforge/global/gfx3d.checkCollision",
+      "setFreeCamera": "@pforge/global/gfx3d.setFreeCamera",
+      "getDelta": "@pforge/global/gfx3d.getDelta"
     }
   },
   "@pforge/global/gfx3d.init": {
-    "documentation": "Creates scene, camera and renderer.",
-    "code_sample": "gfx3d.init({ background = 0x0f1115, fov = 70 })"
+    "documentation": "Creates the Three.js scene, camera and renderer. Safe to call multiple times — only the first call has effect.",
+    "params": [
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.init/param/0" }
+    ],
+    "code_sample": "gfx3d.init({\n  background = 0x0f1115,\n  fov = 70,\n  near = 0.1,\n  far = 4000\n})"
+  },
+  "@pforge/global/gfx3d.init/param/0": {
+    "documentation": "Table with optional fields: <code>background</code> (hex), <code>fov</code> (number), <code>near</code>, <code>far</code>."
   },
   "@pforge/global/gfx3d.addLight": {
-    "documentation": "Adds a light. Types: ambient, directional, point, hemisphere.",
-    "code_sample": "gfx3d.addLight(\"ambient\", { color = 0xffffff, intensity = 0.6 })"
+    "documentation": "Adds a light. Types: <code>\"ambient\"</code>, <code>\"directional\"</code>, <code>\"point\"</code>, <code>\"hemisphere\"</code>.",
+    "params": [
+      { "name": "type", "documentation": "@pforge/global/gfx3d.addLight/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addLight/param/1" }
+    ],
+    "code_sample": "gfx3d.addLight(\"ambient\",    { color = 0xffffff, intensity = 0.6 })\ngfx3d.addLight(\"directional\",{ color = 0xffffff, intensity = 1.0, position = { -30, 60, -20 } })"
+  },
+  "@pforge/global/gfx3d.addLight/param/0": { "documentation": "Light type string." },
+  "@pforge/global/gfx3d.addLight/param/1": {
+    "documentation": "<code>{ color, intensity, position = {x,y,z}, groundColor }</code>. <code>groundColor</code> only applies to hemisphere lights."
   },
   "@pforge/global/gfx3d.addBox": {
-    "documentation": "Adds a box mesh.",
-    "code_sample": "gfx3d.addBox(\"cube\", { size = {1, 1, 1}, color = 0x4fa8d8 })"
+    "documentation": "Adds a box mesh. Returns the underlying Three.js mesh.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addBox/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addBox/param/1" }
+    ],
+    "returns": [
+      { "name": "mesh", "documentation": "@pforge/global/gfx3d.addBox/return/0" }
+    ],
+    "code_sample": "gfx3d.addBox(\"cube\", {\n  size = {1, 1, 1},\n  color = 0x4fa8d8,\n  position = {0, 0.5, 0},\n  rotation = {0, math.pi/4, 0}\n})"
   },
+  "@pforge/global/gfx3d.addBox/param/0": { "documentation": "Unique part name (used by <code>get</code>/<code>remove</code>/<code>setPosition</code>)." },
+  "@pforge/global/gfx3d.addBox/param/1": {
+    "documentation": "<code>{ size = {w,h,d}, color, position = {x,y,z}, rotation = {x,y,z}, scale = {x,y,z}, collidable = true }</code>."
+  },
+  "@pforge/global/gfx3d.addBox/return/0": { "documentation": "The mesh object." },
   "@pforge/global/gfx3d.addSphere": {
     "documentation": "Adds a sphere mesh.",
-    "code_sample": "gfx3d.addSphere(\"ball\", { radius = 0.5, color = 0xe04343 })"
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addSphere/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addSphere/param/1" }
+    ],
+    "code_sample": "gfx3d.addSphere(\"ball\", { radius = 0.5, color = 0xe04343, position = {0, 0.5, 0} })"
   },
+  "@pforge/global/gfx3d.addSphere/param/0": { "documentation": "Unique part name." },
+  "@pforge/global/gfx3d.addSphere/param/1": { "documentation": "<code>{ radius, color, position, rotation, scale, collidable }</code>." },
   "@pforge/global/gfx3d.addPlane": {
-    "documentation": "Adds a plane mesh (ground).",
-    "code_sample": "gfx3d.addPlane(\"ground\", { width = 20, height = 20 })"
+    "documentation": "Adds a plane (commonly used for ground).",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addPlane/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addPlane/param/1" }
+    ],
+    "code_sample": "gfx3d.addPlane(\"ground\", {\n  width = 200, height = 200,\n  color = 0x353941,\n  rotationX = -1.5707963,\n  position = {0, -0.02, 0}\n})"
   },
+  "@pforge/global/gfx3d.addPlane/param/0": { "documentation": "Unique part name." },
+  "@pforge/global/gfx3d.addPlane/param/1": { "documentation": "<code>{ width, height, color, rotationX, position }</code>." },
+  "@pforge/global/gfx3d.addGrid": {
+    "documentation": "Adds a grid helper (visual only, not collidable).",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addGrid/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addGrid/param/1" }
+    ],
+    "code_sample": "gfx3d.addGrid(\"grid\", { size = 200, divisions = 200, color1 = 0x555a66, color2 = 0x3a3e47 })"
+  },
+  "@pforge/global/gfx3d.addGrid/param/0": { "documentation": "Unique name." },
+  "@pforge/global/gfx3d.addGrid/param/1": { "documentation": "<code>{ size, divisions, color1, color2, position }</code>." },
+  "@pforge/global/gfx3d.addCylinder": {
+    "documentation": "Adds a cylinder mesh.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addCylinder/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addCylinder/param/1" }
+    ],
+    "code_sample": "gfx3d.addCylinder(\"pillar\", { radiusTop = 0.5, radiusBottom = 0.5, height = 3, color = 0xcccccc })"
+  },
+  "@pforge/global/gfx3d.addCylinder/param/0": { "documentation": "Unique name." },
+  "@pforge/global/gfx3d.addCylinder/param/1": { "documentation": "<code>{ radiusTop, radiusBottom, height, color, position, rotation, scale, collidable }</code>." },
+  "@pforge/global/gfx3d.addCone": {
+    "documentation": "Adds a cone mesh.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addCone/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addCone/param/1" }
+    ]
+  },
+  "@pforge/global/gfx3d.addCone/param/0": { "documentation": "Unique name." },
+  "@pforge/global/gfx3d.addCone/param/1": { "documentation": "<code>{ radius, height, color, position, rotation, scale, collidable }</code>." },
+  "@pforge/global/gfx3d.addTorus": {
+    "documentation": "Adds a torus (donut) mesh.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.addTorus/param/0" },
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.addTorus/param/1" }
+    ]
+  },
+  "@pforge/global/gfx3d.addTorus/param/0": { "documentation": "Unique name." },
+  "@pforge/global/gfx3d.addTorus/param/1": { "documentation": "<code>{ radius, tube, color, position, rotation, scale, collidable }</code>." },
+  "@pforge/global/gfx3d.get": {
+    "documentation": "Returns the mesh registered under <code>name</code>, or <code>nil</code>.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.get/param/0" }
+    ],
+    "returns": [
+      { "name": "mesh", "documentation": "@pforge/global/gfx3d.get/return/0" }
+    ]
+  },
+  "@pforge/global/gfx3d.get/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.get/return/0": { "documentation": "Mesh or <code>nil</code>." },
+  "@pforge/global/gfx3d.remove": {
+    "documentation": "Removes a part and disposes its geometry/material.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.remove/param/0" }
+    ],
+    "code_sample": "gfx3d.remove(\"cube\")"
+  },
+  "@pforge/global/gfx3d.remove/param/0": { "documentation": "Part name." },
   "@pforge/global/gfx3d.setCamera": {
-    "documentation": "Configures the camera.",
-    "code_sample": "gfx3d.setCamera({ position = {0, 3, 8}, lookAt = {0, 0, 0} })"
+    "documentation": "Configures the active camera.",
+    "params": [
+      { "name": "opts", "documentation": "@pforge/global/gfx3d.setCamera/param/0" }
+    ],
+    "code_sample": "gfx3d.setCamera({ position = {8, 8, 12}, lookAt = {0, 0, 0}, fov = 70 })"
   },
+  "@pforge/global/gfx3d.setCamera/param/0": { "documentation": "<code>{ position = {x,y,z}, lookAt = {x,y,z}, fov }</code>." },
+  "@pforge/global/gfx3d.moveCamera": {
+    "documentation": "Translates the camera by <code>(dx, dy, dz)</code>.",
+    "params": [
+      { "name": "dx", "documentation": "@pforge/global/gfx3d.moveCamera/param/0" },
+      { "name": "dy", "documentation": "@pforge/global/gfx3d.moveCamera/param/1" },
+      { "name": "dz", "documentation": "@pforge/global/gfx3d.moveCamera/param/2" }
+    ]
+  },
+  "@pforge/global/gfx3d.moveCamera/param/0": { "documentation": "X delta." },
+  "@pforge/global/gfx3d.moveCamera/param/1": { "documentation": "Y delta." },
+  "@pforge/global/gfx3d.moveCamera/param/2": { "documentation": "Z delta." },
   "@pforge/global/gfx3d.render": {
-    "documentation": "Renders the scene. Call inside onDraw.",
-    "code_sample": "onDraw(function()\n  gfx3d.render()\nend)"
+    "documentation": "Renders the scene. Call it inside <code>onDraw</code> — the runtime already calls it automatically if you registered <code>gfx3d.init</code>.",
+    "code_sample": "onDraw(function()\n  gfx3d.rotate(\"cube\", 0, 0.01, 0)\n  gfx3d.render()\nend)"
   },
   "@pforge/global/gfx3d.rotate": {
-    "documentation": "Adds rotation to a mesh.",
-    "code_sample": "gfx3d.rotate(\"cube\", 0, 0.01, 0)"
+    "documentation": "Adds the given rotation to a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.rotate/param/0" },
+      { "name": "rx", "documentation": "@pforge/global/gfx3d.rotate/param/1" },
+      { "name": "ry", "documentation": "@pforge/global/gfx3d.rotate/param/2" },
+      { "name": "rz", "documentation": "@pforge/global/gfx3d.rotate/param/3" }
+    ]
   },
+  "@pforge/global/gfx3d.rotate/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.rotate/param/1": { "documentation": "X radians." },
+  "@pforge/global/gfx3d.rotate/param/2": { "documentation": "Y radians." },
+  "@pforge/global/gfx3d.rotate/param/3": { "documentation": "Z radians." },
   "@pforge/global/gfx3d.translate": {
-    "documentation": "Adds translation to a mesh."
+    "documentation": "Adds the given translation to a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.translate/param/0" },
+      { "name": "dx", "documentation": "@pforge/global/gfx3d.translate/param/1" },
+      { "name": "dy", "documentation": "@pforge/global/gfx3d.translate/param/2" },
+      { "name": "dz", "documentation": "@pforge/global/gfx3d.translate/param/3" }
+    ]
   },
+  "@pforge/global/gfx3d.translate/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.translate/param/1": { "documentation": "X delta." },
+  "@pforge/global/gfx3d.translate/param/2": { "documentation": "Y delta." },
+  "@pforge/global/gfx3d.translate/param/3": { "documentation": "Z delta." },
+  "@pforge/global/gfx3d.setPosition": {
+    "documentation": "Sets the absolute position of a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.setPosition/param/0" },
+      { "name": "x", "documentation": "@pforge/global/gfx3d.setPosition/param/1" },
+      { "name": "y", "documentation": "@pforge/global/gfx3d.setPosition/param/2" },
+      { "name": "z", "documentation": "@pforge/global/gfx3d.setPosition/param/3" }
+    ]
+  },
+  "@pforge/global/gfx3d.setPosition/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.setPosition/param/1": { "documentation": "X." },
+  "@pforge/global/gfx3d.setPosition/param/2": { "documentation": "Y." },
+  "@pforge/global/gfx3d.setPosition/param/3": { "documentation": "Z." },
+  "@pforge/global/gfx3d.setRotation": {
+    "documentation": "Sets the absolute rotation of a part (radians).",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.setRotation/param/0" },
+      { "name": "rx", "documentation": "@pforge/global/gfx3d.setRotation/param/1" },
+      { "name": "ry", "documentation": "@pforge/global/gfx3d.setRotation/param/2" },
+      { "name": "rz", "documentation": "@pforge/global/gfx3d.setRotation/param/3" }
+    ]
+  },
+  "@pforge/global/gfx3d.setRotation/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.setRotation/param/1": { "documentation": "X radians." },
+  "@pforge/global/gfx3d.setRotation/param/2": { "documentation": "Y radians." },
+  "@pforge/global/gfx3d.setRotation/param/3": { "documentation": "Z radians." },
+  "@pforge/global/gfx3d.setScale": {
+    "documentation": "Sets the scale of a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.setScale/param/0" },
+      { "name": "sx", "documentation": "@pforge/global/gfx3d.setScale/param/1" },
+      { "name": "sy", "documentation": "@pforge/global/gfx3d.setScale/param/2" },
+      { "name": "sz", "documentation": "@pforge/global/gfx3d.setScale/param/3" }
+    ]
+  },
+  "@pforge/global/gfx3d.setScale/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.setScale/param/1": { "documentation": "X scale." },
+  "@pforge/global/gfx3d.setScale/param/2": { "documentation": "Y scale." },
+  "@pforge/global/gfx3d.setScale/param/3": { "documentation": "Z scale." },
+  "@pforge/global/gfx3d.setVisible": {
+    "documentation": "Shows or hides a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.setVisible/param/0" },
+      { "name": "visible", "documentation": "@pforge/global/gfx3d.setVisible/param/1" }
+    ]
+  },
+  "@pforge/global/gfx3d.setVisible/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.setVisible/param/1": { "documentation": "Boolean." },
+  "@pforge/global/gfx3d.setColor": {
+    "documentation": "Changes the diffuse color of a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.setColor/param/0" },
+      { "name": "color", "documentation": "@pforge/global/gfx3d.setColor/param/1" }
+    ],
+    "code_sample": "gfx3d.setColor(\"cube\", 0xe04343)"
+  },
+  "@pforge/global/gfx3d.setColor/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.setColor/param/1": { "documentation": "<code>0xRRGGBB</code> number." },
+  "@pforge/global/gfx3d.setCollidable": {
+    "documentation": "Toggles collision detection for a part.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.setCollidable/param/0" },
+      { "name": "value", "documentation": "@pforge/global/gfx3d.setCollidable/param/1" }
+    ]
+  },
+  "@pforge/global/gfx3d.setCollidable/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.setCollidable/param/1": { "documentation": "Boolean." },
+  "@pforge/global/gfx3d.getCollidable": {
+    "documentation": "Returns whether a part is collidable.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.getCollidable/param/0" }
+    ],
+    "returns": [
+      { "name": "value", "documentation": "@pforge/global/gfx3d.getCollidable/return/0" }
+    ]
+  },
+  "@pforge/global/gfx3d.getCollidable/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.getCollidable/return/0": { "documentation": "Boolean." },
+  "@pforge/global/gfx3d.getPartTop": {
+    "documentation": "Returns the highest Y of a part's world bounding box (useful for landing on top of a platform).",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.getPartTop/param/0" }
+    ],
+    "returns": [
+      { "name": "y", "documentation": "@pforge/global/gfx3d.getPartTop/return/0" }
+    ]
+  },
+  "@pforge/global/gfx3d.getPartTop/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.getPartTop/return/0": { "documentation": "Top Y in world units." },
+  "@pforge/global/gfx3d.getPartBottom": {
+    "documentation": "Returns the lowest Y of a part's world bounding box.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/gfx3d.getPartBottom/param/0" }
+    ],
+    "returns": [
+      { "name": "y", "documentation": "@pforge/global/gfx3d.getPartBottom/return/0" }
+    ]
+  },
+  "@pforge/global/gfx3d.getPartBottom/param/0": { "documentation": "Part name." },
+  "@pforge/global/gfx3d.getPartBottom/return/0": { "documentation": "Bottom Y." },
+  "@pforge/global/gfx3d.checkCollision": {
+    "documentation": "Returns the name of the first collidable mesh intersecting the given AABB, or <code>\"\"</code> if none.",
+    "params": [
+      { "name": "minX", "documentation": "@pforge/global/gfx3d.checkCollision/param/0" },
+      { "name": "minY", "documentation": "@pforge/global/gfx3d.checkCollision/param/1" },
+      { "name": "minZ", "documentation": "@pforge/global/gfx3d.checkCollision/param/2" },
+      { "name": "maxX", "documentation": "@pforge/global/gfx3d.checkCollision/param/3" },
+      { "name": "maxY", "documentation": "@pforge/global/gfx3d.checkCollision/param/4" },
+      { "name": "maxZ", "documentation": "@pforge/global/gfx3d.checkCollision/param/5" }
+    ],
+    "returns": [
+      { "name": "hit", "documentation": "@pforge/global/gfx3d.checkCollision/return/0" }
+    ],
+    "code_sample": "local hit = gfx3d.checkCollision(-0.4, 0, -0.4, 0.4, 1.7, 0.4)\nif hit ~= \"\" then print(\"blocked by\", hit) end"
+  },
+  "@pforge/global/gfx3d.checkCollision/param/0": { "documentation": "Min X of the test box." },
+  "@pforge/global/gfx3d.checkCollision/param/1": { "documentation": "Min Y." },
+  "@pforge/global/gfx3d.checkCollision/param/2": { "documentation": "Min Z." },
+  "@pforge/global/gfx3d.checkCollision/param/3": { "documentation": "Max X." },
+  "@pforge/global/gfx3d.checkCollision/param/4": { "documentation": "Max Y." },
+  "@pforge/global/gfx3d.checkCollision/param/5": { "documentation": "Max Z." },
+  "@pforge/global/gfx3d.checkCollision/return/0": { "documentation": "Hit part name or empty string." },
+  "@pforge/global/gfx3d.setFreeCamera": {
+    "documentation": "Toggles the built-in fly-cam (WASD + right mouse). Useful in editor mode; the player controller disables it.",
+    "params": [
+      { "name": "enabled", "documentation": "@pforge/global/gfx3d.setFreeCamera/param/0" }
+    ]
+  },
+  "@pforge/global/gfx3d.setFreeCamera/param/0": { "documentation": "Boolean." },
+  "@pforge/global/gfx3d.getDelta": {
+    "documentation": "Returns the number of seconds elapsed since the last call (Three.js Clock).",
+    "returns": [
+      { "name": "dt", "documentation": "@pforge/global/gfx3d.getDelta/return/0" }
+    ]
+  },
+  "@pforge/global/gfx3d.getDelta/return/0": { "documentation": "Seconds since last call." },
 
   "@pforge/global/PForgeImage": {
-    "documentation": "Offscreen canvas you can manipulate pixel by pixel.",
-    "code_sample": "local img = PForgeImage.new(32, 32, true)"
+    "documentation": "Offscreen canvas you can draw on and manipulate pixel by pixel. Origin is top-left unless <code>centered</code> is true, in which case it's the center with Y flipped.",
+    "keys": {
+      "new": "@pforge/global/PForgeImage.new",
+      "clear": "@pforge/global/PForgeImage.clear",
+      "setColor": "@pforge/global/PForgeImage.setColor",
+      "setAlpha": "@pforge/global/PForgeImage.setAlpha",
+      "setFont": "@pforge/global/PForgeImage.setFont",
+      "setPixelated": "@pforge/global/PForgeImage.setPixelated",
+      "setLineWidth": "@pforge/global/PForgeImage.setLineWidth",
+      "setLineDash": "@pforge/global/PForgeImage.setLineDash",
+      "setRGB": "@pforge/global/PForgeImage.setRGB",
+      "setRGBA": "@pforge/global/PForgeImage.setRGBA",
+      "getRGB": "@pforge/global/PForgeImage.getRGB",
+      "getRGBA": "@pforge/global/PForgeImage.getRGBA",
+      "fillRect": "@pforge/global/PForgeImage.fillRect",
+      "drawRect": "@pforge/global/PForgeImage.drawRect",
+      "fillRound": "@pforge/global/PForgeImage.fillRound",
+      "drawRound": "@pforge/global/PForgeImage.drawRound",
+      "fillRoundRect": "@pforge/global/PForgeImage.fillRoundRect",
+      "drawRoundRect": "@pforge/global/PForgeImage.drawRoundRect",
+      "drawLine": "@pforge/global/PForgeImage.drawLine",
+      "drawText": "@pforge/global/PForgeImage.drawText",
+      "textWidth": "@pforge/global/PForgeImage.textWidth",
+      "drawImage": "@pforge/global/PForgeImage.drawImage",
+      "drawSprite": "@pforge/global/PForgeImage.drawSprite"
+    },
+    "code_sample": "local img = PForgeImage.new(64, 64, true)\nimg.clear(\"#000\")\nimg.setColor(\"#4fa8d8\")\nimg.fillRect(0, 0, 32, 32)\nscreen.drawImage(img, 0, 0, 2)"
   },
+  "@pforge/global/PForgeImage.new": {
+    "documentation": "Creates a new offscreen canvas.",
+    "params": [
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.new/param/0" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.new/param/1" },
+      { "name": "centered", "documentation": "@pforge/global/PForgeImage.new/param/2" }
+    ],
+    "returns": [
+      { "name": "image", "documentation": "@pforge/global/PForgeImage.new/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeImage.new/param/0": { "documentation": "Width in pixels." },
+  "@pforge/global/PForgeImage.new/param/1": { "documentation": "Height in pixels." },
+  "@pforge/global/PForgeImage.new/param/2": { "documentation": "If <code>true</code>, drawing origin is centered and Y is flipped to match <code>screen</code>." },
+  "@pforge/global/PForgeImage.new/return/0": { "documentation": "The image instance." },
+  "@pforge/global/PForgeImage.clear": {
+    "documentation": "Clears the whole image, optionally filling with <code>color</code>.",
+    "params": [
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.clear/param/0" }
+    ]
+  },
+  "@pforge/global/PForgeImage.clear/param/0": { "documentation": "Optional fill color." },
+  "@pforge/global/PForgeImage.setColor": {
+    "documentation": "Sets the current fill/stroke color.",
+    "params": [{ "name": "color", "documentation": "@pforge/global/PForgeImage.setColor/param/0" }]
+  },
+  "@pforge/global/PForgeImage.setColor/param/0": { "documentation": "Color string or number." },
+  "@pforge/global/PForgeImage.setAlpha": {
+    "documentation": "Sets global transparency (0-1).",
+    "params": [{ "name": "alpha", "documentation": "@pforge/global/PForgeImage.setAlpha/param/0" }]
+  },
+  "@pforge/global/PForgeImage.setAlpha/param/0": { "documentation": "Number in [0, 1]." },
+  "@pforge/global/PForgeImage.setFont": {
+    "documentation": "Sets the font for <code>drawText</code>.",
+    "params": [{ "name": "font", "documentation": "@pforge/global/PForgeImage.setFont/param/0" }]
+  },
+  "@pforge/global/PForgeImage.setFont/param/0": { "documentation": "CSS font family." },
+  "@pforge/global/PForgeImage.setPixelated": {
+    "documentation": "Disables image smoothing.",
+    "params": [{ "name": "value", "documentation": "@pforge/global/PForgeImage.setPixelated/param/0" }]
+  },
+  "@pforge/global/PForgeImage.setPixelated/param/0": { "documentation": "Boolean." },
+  "@pforge/global/PForgeImage.setLineWidth": {
+    "documentation": "Sets stroke width in pixels.",
+    "params": [{ "name": "width", "documentation": "@pforge/global/PForgeImage.setLineWidth/param/0" }]
+  },
+  "@pforge/global/PForgeImage.setLineWidth/param/0": { "documentation": "Number." },
+  "@pforge/global/PForgeImage.setLineDash": {
+    "documentation": "Sets stroke dash pattern.",
+    "params": [{ "name": "pattern", "documentation": "@pforge/global/PForgeImage.setLineDash/param/0" }]
+  },
+  "@pforge/global/PForgeImage.setLineDash/param/0": { "documentation": "Array of numbers." },
+  "@pforge/global/PForgeImage.setRGB": {
+    "documentation": "Sets a single pixel's RGB.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.setRGB/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.setRGB/param/1" },
+      { "name": "r", "documentation": "@pforge/global/PForgeImage.setRGB/param/2" },
+      { "name": "g", "documentation": "@pforge/global/PForgeImage.setRGB/param/3" },
+      { "name": "b", "documentation": "@pforge/global/PForgeImage.setRGB/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.setRGB/param/0": { "documentation": "Pixel X." },
+  "@pforge/global/PForgeImage.setRGB/param/1": { "documentation": "Pixel Y." },
+  "@pforge/global/PForgeImage.setRGB/param/2": { "documentation": "Red 0-255." },
+  "@pforge/global/PForgeImage.setRGB/param/3": { "documentation": "Green 0-255." },
+  "@pforge/global/PForgeImage.setRGB/param/4": { "documentation": "Blue 0-255." },
+  "@pforge/global/PForgeImage.setRGBA": {
+    "documentation": "Same as <code>setRGB</code> plus alpha.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.setRGBA/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.setRGBA/param/1" },
+      { "name": "r", "documentation": "@pforge/global/PForgeImage.setRGBA/param/2" },
+      { "name": "g", "documentation": "@pforge/global/PForgeImage.setRGBA/param/3" },
+      { "name": "b", "documentation": "@pforge/global/PForgeImage.setRGBA/param/4" },
+      { "name": "a", "documentation": "@pforge/global/PForgeImage.setRGBA/param/5" }
+    ]
+  },
+  "@pforge/global/PForgeImage.setRGBA/param/0": { "documentation": "Pixel X." },
+  "@pforge/global/PForgeImage.setRGBA/param/1": { "documentation": "Pixel Y." },
+  "@pforge/global/PForgeImage.setRGBA/param/2": { "documentation": "Red 0-255." },
+  "@pforge/global/PForgeImage.setRGBA/param/3": { "documentation": "Green 0-255." },
+  "@pforge/global/PForgeImage.setRGBA/param/4": { "documentation": "Blue 0-255." },
+  "@pforge/global/PForgeImage.setRGBA/param/5": { "documentation": "Alpha 0-255." },
+  "@pforge/global/PForgeImage.getRGB": {
+    "documentation": "Reads a pixel's RGB.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.getRGB/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.getRGB/param/1" }
+    ],
+    "returns": [
+      { "name": "rgb", "documentation": "@pforge/global/PForgeImage.getRGB/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeImage.getRGB/param/0": { "documentation": "Pixel X." },
+  "@pforge/global/PForgeImage.getRGB/param/1": { "documentation": "Pixel Y." },
+  "@pforge/global/PForgeImage.getRGB/return/0": { "documentation": "<code>{ r, g, b }</code>." },
+  "@pforge/global/PForgeImage.getRGBA": {
+    "documentation": "Reads a pixel's RGBA.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.getRGBA/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.getRGBA/param/1" }
+    ],
+    "returns": [
+      { "name": "rgba", "documentation": "@pforge/global/PForgeImage.getRGBA/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeImage.getRGBA/param/0": { "documentation": "Pixel X." },
+  "@pforge/global/PForgeImage.getRGBA/param/1": { "documentation": "Pixel Y." },
+  "@pforge/global/PForgeImage.getRGBA/return/0": { "documentation": "<code>{ r, g, b, a }</code>." },
+  "@pforge/global/PForgeImage.fillRect": {
+    "documentation": "Fills a rectangle on the offscreen image.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.fillRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.fillRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.fillRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.fillRect/param/3" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.fillRect/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.fillRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.fillRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.fillRect/param/2": { "documentation": "Width." },
+  "@pforge/global/PForgeImage.fillRect/param/3": { "documentation": "Height." },
+  "@pforge/global/PForgeImage.fillRect/param/4": { "documentation": "Fill color." },
+  "@pforge/global/PForgeImage.drawRect": {
+    "documentation": "Strokes a rectangle on the offscreen image.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.drawRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.drawRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.drawRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.drawRect/param/3" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.drawRect/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.drawRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.drawRect/param/2": { "documentation": "Width." },
+  "@pforge/global/PForgeImage.drawRect/param/3": { "documentation": "Height." },
+  "@pforge/global/PForgeImage.drawRect/param/4": { "documentation": "Stroke color." },
+  "@pforge/global/PForgeImage.fillRound": {
+    "documentation": "Fills an ellipse on the offscreen image.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.fillRound/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.fillRound/param/1" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.fillRound/param/2" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.fillRound/param/3" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.fillRound/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.fillRound/param/0": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.fillRound/param/1": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.fillRound/param/2": { "documentation": "Diameter X." },
+  "@pforge/global/PForgeImage.fillRound/param/3": { "documentation": "Diameter Y." },
+  "@pforge/global/PForgeImage.fillRound/param/4": { "documentation": "Fill color." },
+  "@pforge/global/PForgeImage.drawRound": {
+    "documentation": "Strokes an ellipse on the offscreen image.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.drawRound/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.drawRound/param/1" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.drawRound/param/2" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.drawRound/param/3" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.drawRound/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawRound/param/0": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.drawRound/param/1": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.drawRound/param/2": { "documentation": "Diameter X." },
+  "@pforge/global/PForgeImage.drawRound/param/3": { "documentation": "Diameter Y." },
+  "@pforge/global/PForgeImage.drawRound/param/4": { "documentation": "Stroke color." },
+  "@pforge/global/PForgeImage.fillRoundRect": {
+    "documentation": "Fills a rounded rectangle on the offscreen image.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.fillRoundRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.fillRoundRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.fillRoundRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.fillRoundRect/param/3" },
+      { "name": "radius", "documentation": "@pforge/global/PForgeImage.fillRoundRect/param/4" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.fillRoundRect/param/5" }
+    ]
+  },
+  "@pforge/global/PForgeImage.fillRoundRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.fillRoundRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.fillRoundRect/param/2": { "documentation": "Width." },
+  "@pforge/global/PForgeImage.fillRoundRect/param/3": { "documentation": "Height." },
+  "@pforge/global/PForgeImage.fillRoundRect/param/4": { "documentation": "Corner radius." },
+  "@pforge/global/PForgeImage.fillRoundRect/param/5": { "documentation": "Fill color." },
+  "@pforge/global/PForgeImage.drawRoundRect": {
+    "documentation": "Strokes a rounded rectangle on the offscreen image.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.drawRoundRect/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.drawRoundRect/param/1" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.drawRoundRect/param/2" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.drawRoundRect/param/3" },
+      { "name": "radius", "documentation": "@pforge/global/PForgeImage.drawRoundRect/param/4" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.drawRoundRect/param/5" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawRoundRect/param/0": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.drawRoundRect/param/1": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.drawRoundRect/param/2": { "documentation": "Width." },
+  "@pforge/global/PForgeImage.drawRoundRect/param/3": { "documentation": "Height." },
+  "@pforge/global/PForgeImage.drawRoundRect/param/4": { "documentation": "Corner radius." },
+  "@pforge/global/PForgeImage.drawRoundRect/param/5": { "documentation": "Stroke color." },
+  "@pforge/global/PForgeImage.drawLine": {
+    "documentation": "Draws a line on the offscreen image.",
+    "params": [
+      { "name": "x1", "documentation": "@pforge/global/PForgeImage.drawLine/param/0" },
+      { "name": "y1", "documentation": "@pforge/global/PForgeImage.drawLine/param/1" },
+      { "name": "x2", "documentation": "@pforge/global/PForgeImage.drawLine/param/2" },
+      { "name": "y2", "documentation": "@pforge/global/PForgeImage.drawLine/param/3" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawLine/param/0": { "documentation": "Start X." },
+  "@pforge/global/PForgeImage.drawLine/param/1": { "documentation": "Start Y." },
+  "@pforge/global/PForgeImage.drawLine/param/2": { "documentation": "End X." },
+  "@pforge/global/PForgeImage.drawLine/param/3": { "documentation": "End Y." },
+  "@pforge/global/PForgeImage.drawText": {
+    "documentation": "Draws a string on the offscreen image.",
+    "params": [
+      { "name": "text", "documentation": "@pforge/global/PForgeImage.drawText/param/0" },
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.drawText/param/1" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.drawText/param/2" },
+      { "name": "size", "documentation": "@pforge/global/PForgeImage.drawText/param/3" },
+      { "name": "color", "documentation": "@pforge/global/PForgeImage.drawText/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawText/param/0": { "documentation": "Text." },
+  "@pforge/global/PForgeImage.drawText/param/1": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.drawText/param/2": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.drawText/param/3": { "documentation": "Font size in pixels." },
+  "@pforge/global/PForgeImage.drawText/param/4": { "documentation": "Fill color." },
+  "@pforge/global/PForgeImage.textWidth": {
+    "documentation": "Returns the rendered width of <code>text</code> in pixels.",
+    "params": [
+      { "name": "text", "documentation": "@pforge/global/PForgeImage.textWidth/param/0" },
+      { "name": "size", "documentation": "@pforge/global/PForgeImage.textWidth/param/1" }
+    ],
+    "returns": [
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.textWidth/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeImage.textWidth/param/0": { "documentation": "Text." },
+  "@pforge/global/PForgeImage.textWidth/param/1": { "documentation": "Font size." },
+  "@pforge/global/PForgeImage.textWidth/return/0": { "documentation": "Width in pixels." },
+  "@pforge/global/PForgeImage.drawImage": {
+    "documentation": "Draws another <code>PForgeImage</code> onto this one.",
+    "params": [
+      { "name": "image", "documentation": "@pforge/global/PForgeImage.drawImage/param/0" },
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.drawImage/param/1" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.drawImage/param/2" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.drawImage/param/3" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.drawImage/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawImage/param/0": { "documentation": "Source image." },
+  "@pforge/global/PForgeImage.drawImage/param/1": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.drawImage/param/2": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.drawImage/param/3": { "documentation": "Width." },
+  "@pforge/global/PForgeImage.drawImage/param/4": { "documentation": "Optional height." },
+  "@pforge/global/PForgeImage.drawSprite": {
+    "documentation": "Draws a sprite (from <code>sprites</code>) onto this image.",
+    "params": [
+      { "name": "name", "documentation": "@pforge/global/PForgeImage.drawSprite/param/0" },
+      { "name": "x", "documentation": "@pforge/global/PForgeImage.drawSprite/param/1" },
+      { "name": "y", "documentation": "@pforge/global/PForgeImage.drawSprite/param/2" },
+      { "name": "width", "documentation": "@pforge/global/PForgeImage.drawSprite/param/3" },
+      { "name": "height", "documentation": "@pforge/global/PForgeImage.drawSprite/param/4" }
+    ]
+  },
+  "@pforge/global/PForgeImage.drawSprite/param/0": { "documentation": "Key in <code>sprites</code>." },
+  "@pforge/global/PForgeImage.drawSprite/param/1": { "documentation": "Center X." },
+  "@pforge/global/PForgeImage.drawSprite/param/2": { "documentation": "Center Y." },
+  "@pforge/global/PForgeImage.drawSprite/param/3": { "documentation": "Width." },
+  "@pforge/global/PForgeImage.drawSprite/param/4": { "documentation": "Optional height." },
+
   "@pforge/global/PForgeSprite": {
-    "documentation": "A collection of frames (PForgeImage) with configurable FPS.",
-    "code_sample": "local s = PForgeSprite.new({frame1, frame2})"
+    "documentation": "A collection of <code>PForgeImage</code> frames with configurable FPS.",
+    "keys": {
+      "new": "@pforge/global/PForgeSprite.new",
+      "setFPS": "@pforge/global/PForgeSprite.setFPS",
+      "setFrame": "@pforge/global/PForgeSprite.setFrame"
+    },
+    "code_sample": "local s = PForgeSprite.new({frame1, frame2, frame3})\ns.setFPS(12)\nsprites[\"player\"] = s"
   },
+  "@pforge/global/PForgeSprite.new": {
+    "documentation": "Creates a sprite from an array of frames.",
+    "params": [
+      { "name": "frames", "documentation": "@pforge/global/PForgeSprite.new/param/0" }
+    ],
+    "returns": [
+      { "name": "sprite", "documentation": "@pforge/global/PForgeSprite.new/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeSprite.new/param/0": { "documentation": "Array of <code>PForgeImage</code> frames." },
+  "@pforge/global/PForgeSprite.new/return/0": { "documentation": "Sprite instance." },
+  "@pforge/global/PForgeSprite.setFPS": {
+    "documentation": "Sets the frame rate. Preserves the current playback phase.",
+    "params": [{ "name": "fps", "documentation": "@pforge/global/PForgeSprite.setFPS/param/0" }]
+  },
+  "@pforge/global/PForgeSprite.setFPS/param/0": { "documentation": "Frames per second." },
+  "@pforge/global/PForgeSprite.setFrame": {
+    "documentation": "Sets the current frame by index (0-based).",
+    "params": [{ "name": "index", "documentation": "@pforge/global/PForgeSprite.setFrame/param/0" }]
+  },
+  "@pforge/global/PForgeSprite.setFrame/param/0": { "documentation": "Frame index." },
+
   "@pforge/global/PForgeMap": {
     "documentation": "A 2D grid of tiles.",
-    "code_sample": "local m = PForgeMap.new(20, 15, 1, 1)"
+    "keys": {
+      "new": "@pforge/global/PForgeMap.new",
+      "get": "@pforge/global/PForgeMap.get",
+      "set": "@pforge/global/PForgeMap.set"
+    },
+    "code_sample": "local m = PForgeMap.new(20, 15, 1, 1)\nm.set(3, 3, tileImage)\nscreen.drawMap(\"level1\", 0, 0, 10, 8)"
   },
+  "@pforge/global/PForgeMap.new": {
+    "documentation": "Creates a new tilemap.",
+    "params": [
+      { "name": "width", "documentation": "@pforge/global/PForgeMap.new/param/0" },
+      { "name": "height", "documentation": "@pforge/global/PForgeMap.new/param/1" },
+      { "name": "tileWidth", "documentation": "@pforge/global/PForgeMap.new/param/2" },
+      { "name": "tileHeight", "documentation": "@pforge/global/PForgeMap.new/param/3" }
+    ],
+    "returns": [
+      { "name": "map", "documentation": "@pforge/global/PForgeMap.new/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeMap.new/param/0": { "documentation": "Tiles per row." },
+  "@pforge/global/PForgeMap.new/param/1": { "documentation": "Tiles per column." },
+  "@pforge/global/PForgeMap.new/param/2": { "documentation": "Tile width in units." },
+  "@pforge/global/PForgeMap.new/param/3": { "documentation": "Tile height in units." },
+  "@pforge/global/PForgeMap.new/return/0": { "documentation": "Map instance." },
+  "@pforge/global/PForgeMap.get": {
+    "documentation": "Returns the tile at <code>(x, y)</code> or <code>nil</code>.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeMap.get/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeMap.get/param/1" }
+    ],
+    "returns": [
+      { "name": "tile", "documentation": "@pforge/global/PForgeMap.get/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeMap.get/param/0": { "documentation": "Column." },
+  "@pforge/global/PForgeMap.get/param/1": { "documentation": "Row." },
+  "@pforge/global/PForgeMap.get/return/0": { "documentation": "Tile value (any Lua value)." },
+  "@pforge/global/PForgeMap.set": {
+    "documentation": "Sets the tile at <code>(x, y)</code>.",
+    "params": [
+      { "name": "x", "documentation": "@pforge/global/PForgeMap.set/param/0" },
+      { "name": "y", "documentation": "@pforge/global/PForgeMap.set/param/1" },
+      { "name": "value", "documentation": "@pforge/global/PForgeMap.set/param/2" }
+    ]
+  },
+  "@pforge/global/PForgeMap.set/param/0": { "documentation": "Column." },
+  "@pforge/global/PForgeMap.set/param/1": { "documentation": "Row." },
+  "@pforge/global/PForgeMap.set/param/2": { "documentation": "Tile value." },
+
   "@pforge/global/PForgeSound": {
-    "documentation": "Multi-channel audio buffer.",
-    "code_sample": "local s = PForgeSound.new(1, 44100, 44100)"
+    "documentation": "Multi-channel audio buffer (one Float32Array per channel).",
+    "keys": {
+      "new": "@pforge/global/PForgeSound.new",
+      "write": "@pforge/global/PForgeSound.write",
+      "read": "@pforge/global/PForgeSound.read",
+      "play": "@pforge/global/PForgeSound.play"
+    },
+    "code_sample": "local s = PForgeSound.new(1, 44100, 44100)\nfor i = 0, 44099 do\n  s.write(0, i, math.sin(i / 44100 * 440 * 2 * math.pi) * 0.2)\nend\nsounds[\"tone\"] = s"
+  },
+  "@pforge/global/PForgeSound.new": {
+    "documentation": "Creates a silent buffer.",
+    "params": [
+      { "name": "channels", "documentation": "@pforge/global/PForgeSound.new/param/0" },
+      { "name": "length", "documentation": "@pforge/global/PForgeSound.new/param/1" },
+      { "name": "sampleRate", "documentation": "@pforge/global/PForgeSound.new/param/2" }
+    ],
+    "returns": [
+      { "name": "sound", "documentation": "@pforge/global/PForgeSound.new/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeSound.new/param/0": { "documentation": "Number of channels (1 = mono)." },
+  "@pforge/global/PForgeSound.new/param/1": { "documentation": "Total samples per channel." },
+  "@pforge/global/PForgeSound.new/param/2": { "documentation": "Sample rate (e.g. 44100)." },
+  "@pforge/global/PForgeSound.new/return/0": { "documentation": "Sound instance." },
+  "@pforge/global/PForgeSound.write": {
+    "documentation": "Writes one sample to a channel.",
+    "params": [
+      { "name": "channel", "documentation": "@pforge/global/PForgeSound.write/param/0" },
+      { "name": "index", "documentation": "@pforge/global/PForgeSound.write/param/1" },
+      { "name": "value", "documentation": "@pforge/global/PForgeSound.write/param/2" }
+    ]
+  },
+  "@pforge/global/PForgeSound.write/param/0": { "documentation": "Channel index (0-based)." },
+  "@pforge/global/PForgeSound.write/param/1": { "documentation": "Sample index." },
+  "@pforge/global/PForgeSound.write/param/2": { "documentation": "Sample value in [-1, 1]." },
+  "@pforge/global/PForgeSound.read": {
+    "documentation": "Reads one sample from a channel.",
+    "params": [
+      { "name": "channel", "documentation": "@pforge/global/PForgeSound.read/param/0" },
+      { "name": "index", "documentation": "@pforge/global/PForgeSound.read/param/1" }
+    ],
+    "returns": [
+      { "name": "value", "documentation": "@pforge/global/PForgeSound.read/return/0" }
+    ]
+  },
+  "@pforge/global/PForgeSound.read/param/0": { "documentation": "Channel index." },
+  "@pforge/global/PForgeSound.read/param/1": { "documentation": "Sample index." },
+  "@pforge/global/PForgeSound.read/return/0": { "documentation": "Sample value." },
+  "@pforge/global/PForgeSound.play": {
+    "documentation": "No-op in this runtime. Register the sound in <code>sounds</code> and use <code>audio.playSound</code> instead."
   },
 
   "@pforge/global/sprites": {
-    "documentation": "Global sprite registry. Assign with sprites[\"name\"] = sprite.",
+    "documentation": "Global sprite registry. Assign with <code>sprites[\"name\"] = sprite</code>.",
     "code_sample": "sprites[\"player\"] = PForgeSprite.new({frame1, frame2})"
   },
   "@pforge/global/maps": {
     "documentation": "Global tilemap registry."
   },
   "@pforge/global/sounds": {
-    "documentation": "Global sound registry."
+    "documentation": "Global sound registry (use with <code>audio.playSound</code>)."
   },
   "@pforge/global/music": {
-    "documentation": "Global music registry."
+    "documentation": "Global music registry (use with <code>audio.playMusic</code>)."
   },
 
   "@pforge/global/onInit": {
-    "documentation": "Registers a function called once at startup.",
+    "documentation": "Registers a callback executed once at startup, before the first frame.",
+    "params": [
+      { "name": "callback", "documentation": "@pforge/global/onInit/param/0" }
+    ],
     "code_sample": "onInit(function()\n  print(\"started\")\nend)"
   },
+  "@pforge/global/onInit/param/0": { "documentation": "Function called with no arguments." },
   "@pforge/global/onUpdate": {
-    "documentation": "Registers a function called every frame. dt = delta in seconds.",
-    "code_sample": "onUpdate(function(dt, frame)\n  print(dt)\nend)"
+    "documentation": "Registers a callback executed every frame.",
+    "params": [
+      { "name": "callback", "documentation": "@pforge/global/onUpdate/param/0" }
+    ],
+    "code_sample": "onUpdate(function(dt, frame)\n  print(\"dt:\", dt, \"frame:\", frame)\nend)"
   },
+  "@pforge/global/onUpdate/param/0": { "documentation": "Function <code>(dt, frame)</code> — <code>dt</code> in seconds, <code>frame</code> counter." },
   "@pforge/global/onDraw": {
-    "documentation": "Registers a function called every frame for drawing.",
+    "documentation": "Registers a callback executed every frame after update.",
+    "params": [
+      { "name": "callback", "documentation": "@pforge/global/onDraw/param/0" }
+    ],
     "code_sample": "onDraw(function()\n  screen.clear(\"#0f1115\")\nend)"
   },
+  "@pforge/global/onDraw/param/0": { "documentation": "Function called with no arguments." },
 
   "@pforge/global/after": {
-    "documentation": "Runs a function once after N seconds.",
-    "code_sample": "after(2, function()\n  print(\"2 seconds passed\")\nend)"
+    "documentation": "Schedules <code>action</code> to run once after <code>seconds</code>. Returns a thread handle (<code>pause</code>, <code>resume</code>, <code>stop</code>).",
+    "params": [
+      { "name": "seconds", "documentation": "@pforge/global/after/param/0" },
+      { "name": "action", "documentation": "@pforge/global/after/param/1" }
+    ],
+    "returns": [
+      { "name": "thread", "documentation": "@pforge/global/after/return/0" }
+    ],
+    "code_sample": "local t = after(2, function() print(\"2s\") end)\n-- t:pause() / t:resume() / t:stop()"
   },
+  "@pforge/global/after/param/0": { "documentation": "Delay in seconds." },
+  "@pforge/global/after/param/1": { "documentation": "Callback." },
+  "@pforge/global/after/return/0": { "documentation": "Thread handle with <code>pause</code>, <code>resume</code>, <code>stop</code>." },
   "@pforge/global/every": {
-    "documentation": "Runs a function repeatedly every N seconds.",
-    "code_sample": "every(1, function()\n  print(\"tick\")\nend)"
+    "documentation": "Schedules <code>action</code> to run repeatedly every <code>seconds</code>. Returns a thread handle.",
+    "params": [
+      { "name": "seconds", "documentation": "@pforge/global/every/param/0" },
+      { "name": "action", "documentation": "@pforge/global/every/param/1" }
+    ],
+    "returns": [
+      { "name": "thread", "documentation": "@pforge/global/every/return/0" }
+    ],
+    "code_sample": "local t = every(1, function() print(\"tick\") end)\nt:stop()"
   },
+  "@pforge/global/every/param/0": { "documentation": "Interval in seconds." },
+  "@pforge/global/every/param/1": { "documentation": "Callback." },
+  "@pforge/global/every/return/0": { "documentation": "Thread handle." },
   "@pforge/global/sleep": {
-    "documentation": "Pauses execution for the given number of seconds."
+    "documentation": "Busy-waits the given number of seconds. Freezes the whole game loop — prefer <code>after</code>.",
+    "params": [{ "name": "seconds", "documentation": "@pforge/global/sleep/param/0" }]
   },
+  "@pforge/global/sleep/param/0": { "documentation": "Seconds to block." },
 
-  "@pforge/global/seconds": { "documentation": "Converts a number to seconds." },
-  "@pforge/global/milliseconds": { "documentation": "Converts milliseconds to seconds." },
-  "@pforge/global/sind": { "documentation": "Sine using degrees." },
-  "@pforge/global/cosd": { "documentation": "Cosine using degrees." },
-  "@pforge/global/tand": { "documentation": "Tangent using degrees." },
-  "@pforge/global/asind": { "documentation": "Arcsine returning degrees." },
-  "@pforge/global/acosd": { "documentation": "Arccosine returning degrees." },
-  "@pforge/global/atand": { "documentation": "Arctangent returning degrees." },
-  "@pforge/global/atan2d": { "documentation": "Arctangent of y/x returning degrees." },
+  "@pforge/global/seconds": {
+    "documentation": "Identity helper for readability — returns <code>n</code>.",
+    "params": [{ "name": "n", "documentation": "@pforge/global/seconds/param/0" }],
+    "returns": [{ "name": "n", "documentation": "@pforge/global/seconds/return/0" }]
+  },
+  "@pforge/global/seconds/param/0": { "documentation": "Any number." },
+  "@pforge/global/seconds/return/0": { "documentation": "Same number." },
+  "@pforge/global/milliseconds": {
+    "documentation": "Converts milliseconds to seconds.",
+    "params": [{ "name": "n", "documentation": "@pforge/global/milliseconds/param/0" }],
+    "returns": [{ "name": "seconds", "documentation": "@pforge/global/milliseconds/return/0" }],
+    "code_sample": "after(milliseconds(500), function() print(\"half second\") end)"
+  },
+  "@pforge/global/milliseconds/param/0": { "documentation": "Milliseconds." },
+  "@pforge/global/milliseconds/return/0": { "documentation": "Equivalent seconds." },
+
+  "@pforge/global/sind":   { "documentation": "Sine, input in degrees.", "params": [{ "name": "deg", "documentation": "@pforge/global/sind/param/0" }], "returns": [{ "name": "sin", "documentation": "@pforge/global/sind/return/0" }] },
+  "@pforge/global/sind/param/0":   { "documentation": "Angle in degrees." },
+  "@pforge/global/sind/return/0":  { "documentation": "sin(x·π/180)." },
+  "@pforge/global/cosd":   { "documentation": "Cosine, input in degrees.", "params": [{ "name": "deg", "documentation": "@pforge/global/cosd/param/0" }], "returns": [{ "name": "cos", "documentation": "@pforge/global/cosd/return/0" }] },
+  "@pforge/global/cosd/param/0":   { "documentation": "Angle in degrees." },
+  "@pforge/global/cosd/return/0":  { "documentation": "cos(x·π/180)." },
+  "@pforge/global/tand":   { "documentation": "Tangent, input in degrees.", "params": [{ "name": "deg", "documentation": "@pforge/global/tand/param/0" }], "returns": [{ "name": "tan", "documentation": "@pforge/global/tand/return/0" }] },
+  "@pforge/global/tand/param/0":   { "documentation": "Angle in degrees." },
+  "@pforge/global/tand/return/0":  { "documentation": "tan(x·π/180)." },
+  "@pforge/global/asind":  { "documentation": "Arcsine returning degrees.", "params": [{ "name": "x", "documentation": "@pforge/global/asind/param/0" }], "returns": [{ "name": "deg", "documentation": "@pforge/global/asind/return/0" }] },
+  "@pforge/global/asind/param/0":  { "documentation": "Value in [-1, 1]." },
+  "@pforge/global/asind/return/0": { "documentation": "Angle in degrees." },
+  "@pforge/global/acosd":  { "documentation": "Arccosine returning degrees.", "params": [{ "name": "x", "documentation": "@pforge/global/acosd/param/0" }], "returns": [{ "name": "deg", "documentation": "@pforge/global/acosd/return/0" }] },
+  "@pforge/global/acosd/param/0":  { "documentation": "Value in [-1, 1]." },
+  "@pforge/global/acosd/return/0": { "documentation": "Angle in degrees." },
+  "@pforge/global/atand":  { "documentation": "Arctangent returning degrees.", "params": [{ "name": "x", "documentation": "@pforge/global/atand/param/0" }], "returns": [{ "name": "deg", "documentation": "@pforge/global/atand/return/0" }] },
+  "@pforge/global/atand/param/0":  { "documentation": "Tangent value." },
+  "@pforge/global/atand/return/0": { "documentation": "Angle in degrees." },
+  "@pforge/global/atan2d": { "documentation": "Arctangent of y/x returning degrees.", "params": [{ "name": "y", "documentation": "@pforge/global/atan2d/param/0" }, { "name": "x", "documentation": "@pforge/global/atan2d/param/1" }], "returns": [{ "name": "deg", "documentation": "@pforge/global/atan2d/return/0" }] },
+  "@pforge/global/atan2d/param/0": { "documentation": "Y coordinate." },
+  "@pforge/global/atan2d/param/1": { "documentation": "X coordinate." },
+  "@pforge/global/atan2d/return/0": { "documentation": "Angle in degrees." },
 
   "@pforge/global/random": {
-    "documentation": "Random number generator.",
-    "code_sample": "local r = random.next()\nlocal n = random.nextInt(10)"
+    "documentation": "Seeded random number generator. Deterministic given the same seed.",
+    "keys": {
+      "next": "@pforge/global/random.next",
+      "nextInt": "@pforge/global/random.nextInt",
+      "seed": "@pforge/global/random.seed",
+      "clone": "@pforge/global/random.clone"
+    },
+    "code_sample": "local r = random.nextInt(10)\nprint(r)\n\nrandom.seed(42)\nlocal a = random.next()\nlocal b = random.next()"
   },
+  "@pforge/global/random.next": {
+    "documentation": "Returns a float in <code>[0, 1)</code>.",
+    "returns": [{ "name": "n", "documentation": "@pforge/global/random.next/return/0" }]
+  },
+  "@pforge/global/random.next/return/0": { "documentation": "Number in [0, 1)." },
+  "@pforge/global/random.nextInt": {
+    "documentation": "Returns an integer in <code>[0, max)</code>.",
+    "params": [{ "name": "max", "documentation": "@pforge/global/random.nextInt/param/0" }],
+    "returns": [{ "name": "n", "documentation": "@pforge/global/random.nextInt/return/0" }]
+  },
+  "@pforge/global/random.nextInt/param/0": { "documentation": "Upper bound (exclusive)." },
+  "@pforge/global/random.nextInt/return/0": { "documentation": "Integer." },
+  "@pforge/global/random.seed": {
+    "documentation": "Resets the generator with the given seed.",
+    "params": [{ "name": "seed", "documentation": "@pforge/global/random.seed/param/0" }]
+  },
+  "@pforge/global/random.seed/param/0": { "documentation": "Any number." },
+  "@pforge/global/random.clone": {
+    "documentation": "Returns a new generator with the same or the provided seed.",
+    "params": [{ "name": "seed", "documentation": "@pforge/global/random.clone/param/0" }],
+    "returns": [{ "name": "rng", "documentation": "@pforge/global/random.clone/return/0" }]
+  },
+  "@pforge/global/random.clone/param/0": { "documentation": "Optional seed; defaults to the current state." },
+  "@pforge/global/random.clone/return/0": { "documentation": "Independent generator." },
+
   "@pforge/global/List": {
-    "documentation": "Creates a list (table with helper methods)."
+    "documentation": "Creates a table with convenience methods attached directly to it: <code>insert(el)</code>, <code>insertAt(el, i)</code>, <code>contains(el)</code>, <code>removeAt(i)</code>, <code>removeElement(el)</code>, <code>sortList(cmp)</code>.",
+    "returns": [{ "name": "list", "documentation": "@pforge/global/List/return/0" }],
+    "code_sample": "local l = List()\nl.insert(\"a\")\nl.insert(\"b\")\nl.insertAt(\"z\", 1)\nprint(l.contains(\"a\")) -- 1\nl.sortList()"
   },
+  "@pforge/global/List/return/0": { "documentation": "The list table." },
 
   "@pforge/global/three": {
-    "documentation": "Three.js bridge for advanced 3D usage."
+    "documentation": "Bridge to the underlying Three.js library, for advanced 3D usage beyond <code>gfx3d</code>.",
+    "keys": {
+      "create": "@pforge/global/three.create",
+      "call": "@pforge/global/three.call",
+      "get": "@pforge/global/three.get",
+      "set": "@pforge/global/three.set",
+      "const": "@pforge/global/three.const"
+    },
+    "code_sample": "local geo = three.create(\"BoxGeometry\", 1, 1, 1)\nlocal mat = three.create(\"MeshStandardMaterial\", { color = 0xff0000 })\nlocal mesh = three.create(\"Mesh\", geo, mat)"
   },
+  "@pforge/global/three.create": {
+    "documentation": "Instantiates a Three.js class. Returns a handle string prefixed with <code>@</code>.",
+    "params": [
+      { "name": "className", "documentation": "@pforge/global/three.create/param/0" },
+      { "name": "args", "documentation": "@pforge/global/three.create/param/1" }
+    ],
+    "returns": [{ "name": "handle", "documentation": "@pforge/global/three.create/return/0" }]
+  },
+  "@pforge/global/three.create/param/0": { "documentation": "e.g. <code>\"BoxGeometry\"</code>, <code>\"Mesh\"</code>, <code>\"PerspectiveCamera\"</code>." },
+  "@pforge/global/three.create/param/1": { "documentation": "Varargs forwarded to the constructor." },
+  "@pforge/global/three.create/return/0": { "documentation": "Opaque handle." },
+  "@pforge/global/three.call": {
+    "documentation": "Calls a method on a handle.",
+    "params": [
+      { "name": "handle", "documentation": "@pforge/global/three.call/param/0" },
+      { "name": "method", "documentation": "@pforge/global/three.call/param/1" },
+      { "name": "args", "documentation": "@pforge/global/three.call/param/2" }
+    ],
+    "returns": [{ "name": "result", "documentation": "@pforge/global/three.call/return/0" }]
+  },
+  "@pforge/global/three.call/param/0": { "documentation": "Handle returned by <code>three.create</code>." },
+  "@pforge/global/three.call/param/1": { "documentation": "Method name (supports dotted paths, e.g. <code>\"position.set\"</code>)." },
+  "@pforge/global/three.call/param/2": { "documentation": "Varargs." },
+  "@pforge/global/three.call/return/0": { "documentation": "Method result (primitive or handle)." },
+  "@pforge/global/three.get": {
+    "documentation": "Reads a property from a handle.",
+    "params": [
+      { "name": "handle", "documentation": "@pforge/global/three.get/param/0" },
+      { "name": "prop", "documentation": "@pforge/global/three.get/param/1" }
+    ],
+    "returns": [{ "name": "value", "documentation": "@pforge/global/three.get/return/0" }]
+  },
+  "@pforge/global/three.get/param/0": { "documentation": "Handle." },
+  "@pforge/global/three.get/param/1": { "documentation": "Property name." },
+  "@pforge/global/three.get/return/0": { "documentation": "Property value." },
+  "@pforge/global/three.set": {
+    "documentation": "Writes a property on a handle.",
+    "params": [
+      { "name": "handle", "documentation": "@pforge/global/three.set/param/0" },
+      { "name": "prop", "documentation": "@pforge/global/three.set/param/1" },
+      { "name": "value", "documentation": "@pforge/global/three.set/param/2" }
+    ]
+  },
+  "@pforge/global/three.set/param/0": { "documentation": "Handle." },
+  "@pforge/global/three.set/param/1": { "documentation": "Property name." },
+  "@pforge/global/three.set/param/2": { "documentation": "Value." },
+  "@pforge/global/three.const": {
+    "documentation": "Returns a numeric/string constant from the THREE namespace (e.g. <code>\"REVISION\"</code>, <code>\"PI\"</code>).",
+    "params": [{ "name": "name", "documentation": "@pforge/global/three.const/param/0" }],
+    "returns": [{ "name": "value", "documentation": "@pforge/global/three.const/return/0" }]
+  },
+  "@pforge/global/three.const/param/0": { "documentation": "Constant name." },
+  "@pforge/global/three.const/return/0": { "documentation": "Primitive value." },
+
+  "@pforge/global/net": {
+    "documentation": "Cross-tab networking (BroadcastChannel-based).",
+    "keys": {
+      "me": "@pforge/global/net.me",
+      "send": "@pforge/global/net.send",
+      "onMessage": "@pforge/global/net.onMessage"
+    },
+    "code_sample": "local ROOM = \"world\"\nnet.onMessage(ROOM, function(msg)\n  print(\"got\", msg)\nend)\nnet.send(ROOM, \"hello\")"
+  },
+  "@pforge/global/net.me": {
+    "documentation": "Returns this tab's unique id (shared with <code>system.tabId()</code>).",
+    "returns": [{ "name": "id", "documentation": "@pforge/global/net.me/return/0" }]
+  },
+  "@pforge/global/net.me/return/0": { "documentation": "String id." },
+  "@pforge/global/net.send": {
+    "documentation": "Broadcasts <code>message</code> (string) to everyone else in <code>room</code>.",
+    "params": [
+      { "name": "room", "documentation": "@pforge/global/net.send/param/0" },
+      { "name": "message", "documentation": "@pforge/global/net.send/param/1" }
+    ]
+  },
+  "@pforge/global/net.send/param/0": { "documentation": "Room name." },
+  "@pforge/global/net.send/param/1": { "documentation": "Payload string." },
+  "@pforge/global/net.onMessage": {
+    "documentation": "Registers a callback invoked for every message received in <code>room</code>.",
+    "params": [
+      { "name": "room", "documentation": "@pforge/global/net.onMessage/param/0" },
+      { "name": "callback", "documentation": "@pforge/global/net.onMessage/param/1" }
+    ]
+  },
+  "@pforge/global/net.onMessage/param/0": { "documentation": "Room name." },
+  "@pforge/global/net.onMessage/param/1": { "documentation": "Function <code>(messageString)</code>." },
 
   "@pforge/global/Server": {
-    "documentation": "Multiplayer server."
+    "documentation": "Server-side network class backed by BroadcastChannel. Server-side only (use in scripts under <code>ServerScripts</code>).",
+    "code_sample": "local srv = Server.new(\"world\")\nonUpdate(function()\n  for _, msg in ipairs(srv.messages) do\n    print(msg.data)\n  end\n  srv.messages = {}\nend)"
   },
   "@pforge/global/ServerConnection": {
-    "documentation": "Client-side connection to a Server."
+    "documentation": "Client-side connection that talks to a <code>Server</code> in the same room.",
+    "code_sample": "local conn = ServerConnection.new(\"world\")\nconn.onMessage = function(data) print(data) end\nconn.send(\"hi\")"
   },
+
+  "@pforge/global/world": {
+    "documentation": "Lazy accessor to studio parts by name. <code>world.MyPart</code> resolves to a table with <code>name</code>, <code>shape</code>, <code>size</code>, <code>position</code>, <code>rotation</code>, <code>scale</code>, <code>color</code>.",
+    "code_sample": "local ground = world.ground\nprint(ground.position.y) -- -0.02"
+  },
+
   "@pforge/global/player": {
-  "documentation": "O player local. Controla movimento, câmera e avatar nativo.",
-  "keys": {
-    "Camera": "@pforge/global/player.Camera",
-    "position": "@pforge/global/player.position",
-    "x": "@pforge/global/player.x",
-    "y": "@pforge/global/player.y",
-    "z": "@pforge/global/player.z",
-    "speed": "@pforge/global/player.speed",
-    "jump": "@pforge/global/player.jump",
-    "gravity": "@pforge/global/player.gravity",
-    "eye": "@pforge/global/player.eye",
-    "sens": "@pforge/global/player.sens",
-    "onGround": "@pforge/global/player.onGround",
-    "vy": "@pforge/global/player.vy",
-    "walkPhase": "@pforge/global/player.walkPhase",
-    "moveBlend": "@pforge/global/player.moveBlend",
-    "multiplayer": "@pforge/global/player.multiplayer",
-    "cameraDistance": "@pforge/global/player.cameraDistance",
-    "cameraDistanceMin": "@pforge/global/player.cameraDistanceMin",
-    "cameraDistanceMax": "@pforge/global/player.cameraDistanceMax",
-    "enabled": "@pforge/global/player.enabled",
-    "teleport": "@pforge/global/player.teleport",
-    "setLook": "@pforge/global/player.setLook",
-    "toggleCamera": "@pforge/global/player.toggleCamera"
-  }
+    "documentation": "Local player. Controls movement, camera, and the native avatar.",
+    "keys": {
+      "Camera": "@pforge/global/player.Camera",
+      "position": "@pforge/global/player.position",
+      "x": "@pforge/global/player.x",
+      "y": "@pforge/global/player.y",
+      "z": "@pforge/global/player.z",
+      "speed": "@pforge/global/player.speed",
+      "jump": "@pforge/global/player.jump",
+      "gravity": "@pforge/global/player.gravity",
+      "eye": "@pforge/global/player.eye",
+      "sens": "@pforge/global/player.sens",
+      "onGround": "@pforge/global/player.onGround",
+      "vy": "@pforge/global/player.vy",
+      "walkPhase": "@pforge/global/player.walkPhase",
+      "moveBlend": "@pforge/global/player.moveBlend",
+      "multiplayer": "@pforge/global/player.multiplayer",
+      "cameraDistance": "@pforge/global/player.cameraDistance",
+      "cameraDistanceMin": "@pforge/global/player.cameraDistanceMin",
+      "cameraDistanceMax": "@pforge/global/player.cameraDistanceMax",
+      "enabled": "@pforge/global/player.enabled",
+      "teleport": "@pforge/global/player.teleport",
+      "setLook": "@pforge/global/player.setLook",
+      "toggleCamera": "@pforge/global/player.toggleCamera"
+    },
+    "code_sample": "player.speed = 12\nplayer.Camera = \"firstPerson\"\n\nonUpdate(function()\n  player.y = player.y + 0.01\nend)"
   },
   "@pforge/global/player.Camera": {
-    "documentation": "Modo de câmera: \"firstPerson\", \"thirdPerson\" ou \"both\". Quando \"both\", a tecla E alterna nativamente."
+    "documentation": "Camera mode: <code>\"firstPerson\"</code>, <code>\"thirdPerson\"</code>, or <code>\"both\"</code>. When <code>\"both\"</code>, the <code>E</code> key toggles natively."
   },
-  "@pforge/global/player.position": {
-    "documentation": "Tabela com a posição do player: { x, y, z }."
-  },
-  "@pforge/global/player.x": { "documentation": "Coordenada X do player (atalho para position.x)." },
-  "@pforge/global/player.y": { "documentation": "Coordenada Y do player (atalho para position.y)." },
-  "@pforge/global/player.z": { "documentation": "Coordenada Z do player (atalho para position.z)." },
-  "@pforge/global/player.speed": { "documentation": "Velocidade de movimento (padrão 8)." },
-  "@pforge/global/player.jump": { "documentation": "Força do pulo (padrão 10)." },
-  "@pforge/global/player.gravity": { "documentation": "Gravidade aplicada ao player (padrão -22)." },
-  "@pforge/global/player.eye": { "documentation": "Altura dos olhos para a câmera (padrão 1.6)." },
-  "@pforge/global/player.sens": { "documentation": "Sensibilidade do mouse (padrão 0.005)." },
-  "@pforge/global/player.onGround": { "documentation": "true se o player está no chão." },
-  "@pforge/global/player.vy": { "documentation": "Velocidade vertical atual." },
-  "@pforge/global/player.walkPhase": { "documentation": "Fase da animação de caminhada (para scripts avançados)." },
-  "@pforge/global/player.moveBlend": { "documentation": "Blend entre idle e andando (0 a 1)." },
-  "@pforge/global/player.multiplayer": { "documentation": "Se true (padrão), o player nativo sincroniza posição via BroadcastChannel." },
-  "@pforge/global/player.cameraDistance": { "documentation": "Distância da câmera em terceira pessoa (padrão 6)." },
-  "@pforge/global/player.cameraDistanceMin": { "documentation": "Distância mínima da câmera em terceira pessoa (padrão 0)." },
-  "@pforge/global/player.cameraDistanceMax": { "documentation": "Distância máxima da câmera em terceira pessoa (padrão 18)." },
-  "@pforge/global/player.enabled": { "documentation": "Se false, desliga a física/câmera/avatar nativos sem desspawnar." },
+  "@pforge/global/player.position": { "documentation": "Table <code>{ x, y, z }</code>." },
+  "@pforge/global/player.x": { "documentation": "Player X (shortcut for <code>position.x</code>)." },
+  "@pforge/global/player.y": { "documentation": "Player Y (shortcut for <code>position.y</code>)." },
+  "@pforge/global/player.z": { "documentation": "Player Z (shortcut for <code>position.z</code>)." },
+  "@pforge/global/player.speed": { "documentation": "Movement speed. Default <code>8</code>." },
+  "@pforge/global/player.jump": { "documentation": "Jump impulse. Default <code>10</code>." },
+  "@pforge/global/player.gravity": { "documentation": "Vertical acceleration per second squared. Default <code>-22</code>." },
+  "@pforge/global/player.eye": { "documentation": "Camera eye height. Default <code>1.6</code>." },
+  "@pforge/global/player.sens": { "documentation": "Mouse look sensitivity. Default <code>0.005</code>." },
+  "@pforge/global/player.onGround": { "documentation": "<code>true</code> while standing on a collidable part." },
+  "@pforge/global/player.vy": { "documentation": "Current vertical velocity." },
+  "@pforge/global/player.walkPhase": { "documentation": "Walk cycle phase (radians) — useful for custom animations." },
+  "@pforge/global/player.moveBlend": { "documentation": "<code>0</code> idle to <code>1</code> walking." },
+  "@pforge/global/player.multiplayer": { "documentation": "If <code>true</code> (default), broadcasts position to other tabs via BroadcastChannel." },
+  "@pforge/global/player.cameraDistance": { "documentation": "Third-person camera distance. Default <code>6</code>." },
+  "@pforge/global/player.cameraDistanceMin": { "documentation": "Min zoom. Default <code>0</code> (first-person)." },
+  "@pforge/global/player.cameraDistanceMax": { "documentation": "Max zoom. Default <code>18</code>." },
+  "@pforge/global/player.enabled": { "documentation": "If <code>false</code>, disables native physics/camera/avatar without despawning." },
   "@pforge/global/player.teleport": {
-    "documentation": "Teleporta o player para (x, y, z).",
+    "documentation": "Teleports the player to <code>(x, y, z)</code> and zeroes vertical velocity.",
     "params": [
       { "name": "x", "documentation": "@pforge/global/player.teleport/param/0" },
       { "name": "y", "documentation": "@pforge/global/player.teleport/param/1" },
@@ -3805,22 +5164,21 @@
     ],
     "code_sample": "player.teleport(0, 0, 0)"
   },
-  "@pforge/global/player.teleport/param/0": { "documentation": "Coordenada X de destino." },
-  "@pforge/global/player.teleport/param/1": { "documentation": "Coordenada Y de destino." },
-  "@pforge/global/player.teleport/param/2": { "documentation": "Coordenada Z de destino." },
+  "@pforge/global/player.teleport/param/0": { "documentation": "Target X." },
+  "@pforge/global/player.teleport/param/1": { "documentation": "Target Y." },
+  "@pforge/global/player.teleport/param/2": { "documentation": "Target Z." },
   "@pforge/global/player.setLook": {
-    "documentation": "Define o yaw e o pitch da câmera.",
+    "documentation": "Sets the yaw and pitch of the camera (radians).",
     "params": [
       { "name": "yaw", "documentation": "@pforge/global/player.setLook/param/0" },
       { "name": "pitch", "documentation": "@pforge/global/player.setLook/param/1" }
     ],
     "code_sample": "player.setLook(math.rad(90), -0.1)"
   },
-  "@pforge/global/player.setLook/param/0": { "documentation": "Ângulo horizontal em radianos." },
-  "@pforge/global/player.setLook/param/1": { "documentation": "Ângulo vertical em radianos." },
+  "@pforge/global/player.setLook/param/0": { "documentation": "Horizontal angle in radians." },
+  "@pforge/global/player.setLook/param/1": { "documentation": "Vertical angle in radians (clamped to ±1.4)." },
   "@pforge/global/player.toggleCamera": {
-    "documentation": "Alterna entre primeira e terceira pessoa (só funciona se player.Camera = \"both\").",
+    "documentation": "Switches between first and third person (only when <code>player.Camera = \"both\"</code>).",
     "code_sample": "player.toggleCamera()"
   }
-  
 }
